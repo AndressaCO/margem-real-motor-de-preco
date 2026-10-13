@@ -31,12 +31,21 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
-      - run: pip install -e ".[dev]"
-      - name: Relatório de referência é reproduzível (mesma semente, mesmo resultado)
+      - name: Instala as versões fixadas no lock file
+        run: |
+          pip install -r requirements-dev.lock
+          pip install --no-deps -e .
+      - name: Relatório de referência é reproduzível (mesma semente, mesmas versões)
         run: |
           python -m margem_real --saida "$RUNNER_TEMP/r.md" --csv "$RUNNER_TEMP/m.csv" > /dev/null
-          diff reports/relatorio.md "$RUNNER_TEMP/r.md"
-          diff reports/margem_por_sku_canal.csv "$RUNNER_TEMP/m.csv"
+          for par in "reports/relatorio.md:r.md" "reports/margem_por_sku_canal.csv:m.csv"; do
+            ref="${par%%:*}"; novo="$RUNNER_TEMP/${par##*:}"
+            if ! diff -q "$ref" "$novo" > /dev/null; then
+              resumo=$(diff "$ref" "$novo" | head -6 | tr '\n' '|')
+              echo "::error title=Divergência em $ref::python=$(python -V) pandas/numpy/duckdb=$(pip list 2>/dev/null | grep -iE '^(pandas|numpy|duckdb) ' | tr -s ' ' | tr '\n' ',') diff=$resumo"
+              exit 1
+            fi
+          done
       - name: Demonstração do pipeline (idempotência e bloqueio de lote ruim)
         run: python -m margem_real.pipeline --skus 100 --json "$RUNNER_TEMP/pipeline.json" > /dev/null
       - name: Avaliação do agente (portão de regressão no conjunto dev)
