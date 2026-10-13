@@ -40,7 +40,12 @@ def ferramentas_chat() -> list[dict[str, Any]]:
 
 
 def cliente_chat_http(
-    url: str, token: str, tentativas: int = 4, espera: float = 5.0, extra: dict | None = None
+    url: str,
+    token: str,
+    tentativas: int = 4,
+    espera: float = 5.0,
+    extra: dict | None = None,
+    timeout: float = 90.0,
 ) -> Cliente:
     """Cliente mínimo (urllib) com repetição em 429/5xx. O token nunca aparece em erros."""
 
@@ -57,7 +62,7 @@ def cliente_chat_http(
         )
         for i in range(tentativas):
             try:
-                with urllib.request.urlopen(req, timeout=120) as r:
+                with urllib.request.urlopen(req, timeout=timeout) as r:
                     bruto = r.read()
                     tipo = r.headers.get("Content-Type") if hasattr(r, "headers") else None
                     url_final = r.geturl() if hasattr(r, "geturl") else url
@@ -72,6 +77,13 @@ def cliente_chat_http(
                     time.sleep(espera * (2**i))
                     continue
                 raise RuntimeError(f"API respondeu HTTP {e.code}") from None
+            except (TimeoutError, urllib.error.URLError) as e:
+                if i < tentativas - 1:
+                    time.sleep(espera * (2**i))
+                    continue
+                raise RuntimeError(
+                    f"sem resposta da API após {tentativas} tentativas ({type(e).__name__})"
+                ) from None
         raise RuntimeError("sem resposta da API")  # pragma: no cover
 
     return chamar

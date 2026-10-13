@@ -351,3 +351,17 @@ def test_cliente_chat_resposta_nao_json(monkeypatch):
     monkeypatch.setattr(C.urllib.request, "urlopen", lambda req, timeout: _Texto({}))
     with pytest.raises(RuntimeError, match="não é JSON"):
         C.cliente_chat_http("https://x", "tok")({})
+
+
+def test_cliente_chat_repete_em_timeout_e_desiste(monkeypatch):
+    n = []
+
+    def falso(req, timeout):
+        n.append(1)
+        raise TimeoutError("read timed out")
+
+    monkeypatch.setattr(C.urllib.request, "urlopen", falso)
+    monkeypatch.setattr(C.time, "sleep", lambda s: None)
+    with pytest.raises(RuntimeError, match="sem resposta da API após 3 tentativas"):
+        C.cliente_chat_http("https://x", "tok", tentativas=3)({})
+    assert len(n) == 3
