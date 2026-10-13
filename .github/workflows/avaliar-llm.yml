@@ -56,7 +56,12 @@ jobs:
           MODELO: ${{ inputs.modelo }}
           TRIALS: ${{ inputs.trials }}
           SPLIT: ${{ inputs.split }}
-        run: python -m margem_real.agent.evals --provedor "$PROVEDOR" --llm-modelo "$MODELO" --trials "$TRIALS" --split "$SPLIT" --saida evals
+        run: |
+          python -m margem_real.agent.evals --provedor "$PROVEDOR" --llm-modelo "$MODELO" \
+            --trials "$TRIALS" --split "$SPLIT" --saida evals 2> erro.log || {
+            echo "::error::$(tail -n 1 erro.log)"
+            exit 1
+          }
       - name: Resumo na página da execução
         if: always()
         run: |
