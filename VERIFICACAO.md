@@ -1,6 +1,6 @@
 # Verificação
 
-Rodada 1: 13/10/2026 (código e contas). Rodada 2: 13/10/2026 (fontes e parâmetros). Rodada 3: 13/10/2026 (pipeline, agente, avaliação, Simples; ver seção 7).
+Rodada 1: 13/10/2026 (código e contas). Rodada 2: 13/10/2026 (fontes e parâmetros). Rodada 3: 13/10/2026 (pipeline, agente, avaliação, Simples; ver seção 6).
 Ambiente: Python 3.11, 3.12 e 3.13; pandas 2.3.3 e 3.0.6; DuckDB 1.5.6; pytest 9.1.1; ruff 0.17.0; mypy 2.4.0.
 
 ## 1. Código e contas (verificado)
@@ -91,7 +91,7 @@ O `marketplace_a` (16% de comissão + R$ 6 fixos) e o `marketplace_b` (12%) fica
 - **Python 3.10 e pandas < 2.3.** Não suportados nem testados (pandas 2.0.3 não instala neste ambiente).
 - **LLM real.** O planejador é um stand-in de regras; nenhuma métrica descreve um modelo de linguagem.
 - **Revisão independente.** A auditoria (`docs/BENCHMARK.md`) é autoauditoria + script.
-- **Links do README do perfil.** Usuário do GitHub (`AndressaCO`) confirmado pela API; LinkedIn e site vieram da sua informação e não foram abertos. O link do repositório só funciona depois da publicação.
+- **Links do README do perfil.** Usuário do GitHub (`AndressaCO`) confirmado pela API; LinkedIn e site vieram da sua informação e não foram abertos. O repositório e o perfil estão publicados e acessíveis pela API do GitHub.
 
 ## 6. Rodada 3 — o que foi verificado e como
 
