@@ -59,7 +59,7 @@ jobs:
           PY
       - name: Auditoria de rubrica
         run: python scripts/auditar.py --rapido
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: avaliacao-agente
           path: ${{ runner.temp }}/evals
