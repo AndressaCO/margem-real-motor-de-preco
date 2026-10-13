@@ -55,7 +55,19 @@ def main(argv: list[str] | None = None) -> None:
     p.add_argument("--trials", type=int, default=5)
     p.add_argument("--p-erro", type=float, default=0.25)
     p.add_argument("--saida", type=Path, default=Path("evals"))
+    p.add_argument(
+        "--llm-modelo",
+        help="id do modelo (ex.: claude-sonnet-5-5). Roda só o LLM real; exige ANTHROPIC_API_KEY.",
+    )
+    p.add_argument("--split", choices=["dev", "heldout", "todos"], default="todos")
+    p.add_argument("--temperatura", type=float, default=None)
     a = p.parse_args(argv)
+    if a.llm_modelo:
+        from .llm_run import rodar_llm
+
+        r = rodar_llm(a.llm_modelo, a.trials, a.split, a.saida, temperatura=a.temperatura)
+        print(json.dumps({"modelo": r["modelo"], "uso": r["uso"]}, ensure_ascii=False, indent=2))
+        return
     ctx = contexto()
     cenarios: dict[str, Callable[[int], Planejador]] = {
         "regras": lambda i: PlanejadorRegras(),

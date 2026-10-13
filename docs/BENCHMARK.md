@@ -60,7 +60,7 @@ Executada ao fechar esta versão; ver [`AUDITORIA.md`](../AUDITORIA.md) e o stat
 
 | Lacuna | Por que não foi fechada |
 |---|---|
-| Nenhum LLM real avaliado | Exigiria chave de API e custo; o harness está pronto para receber um `Planejador` |
+| Nenhum LLM real avaliado | Planejador (`PlanejadorClaude`) e workflow `avaliar-llm` implementados e testados com cliente falso; falta executar com a chave (custo) |
 | Held-out em 36,4% | É um resultado, não um defeito escondido; melhorar o planejador de regras seria ajustar ao held-out e invalidá-lo |
 | Python 3.10 e pandas < 2.3 não suportados | Não testei; declarar suporte seria afirmar sem evidência |
 | Windows/macOS | Não testados |

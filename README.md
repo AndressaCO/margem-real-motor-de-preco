@@ -4,7 +4,7 @@
 
 > **Dados 100% sintéticos.** Alíquotas, comissões e fretes são ilustrativos e não representam nenhuma empresa nem tabela de marketplace. Troque pelos seus números e valide com seu contador.
 
-**English summary:** a small, fully reproducible stack in three layers. (1) **Controllership**: contribution margin, break-even price and Simples Nacional effective rate per SKU × channel. (2) **Data engineering**: a contract-checked, idempotent load pipeline (DuckDB) with quarantine, lineage, reconciliation and freshness controls. (3) **AI-agent evaluation**: a read-only tool layer plus an eval harness (pass@k / pass^k, held-out split, state-based graders). The agent's planner is a rule-based **stand-in, not a language model**; the evals are there to show how one would be tested. Synthetic data, 119 tests, 99% coverage, CI on Python 3.11–3.13.
+**English summary:** a small, fully reproducible stack in three layers. (1) **Controllership**: contribution margin, break-even price and Simples Nacional effective rate per SKU × channel. (2) **Data engineering**: a contract-checked, idempotent load pipeline (DuckDB) with quarantine, lineage, reconciliation and freshness controls. (3) **AI-agent evaluation**: a read-only tool layer plus an eval harness (pass@k / pass^k, held-out split, state-based graders). The agent's planner is a rule-based **stand-in, not a language model**; the evals are there to show how one would be tested. Synthetic data, 130 tests, 99% coverage, CI on Python 3.11–3.13. An LLM planner (`PlanejadorClaude`) is implemented and tested with a fake client, but **has not been run against a real model yet**.
 
 ## Três camadas, um problema
 
@@ -73,7 +73,7 @@ Como ler, sem exagero:
 - O planejador `regras` **não é um modelo de linguagem**: é um stand-in determinístico (regex). Nenhum número acima mede um LLM.
 - `dev` = tarefas usadas enquanto o planejador era escrito; 100% ali é esperado e **não prova generalização**. O conjunto **held-out** (36,4%) é o número honesto: ele expôs 6 falhas de roteamento e 1 resposta silenciosamente errada (o custo fixo era ignorado), que estão registradas, não escondidas.
 - `ruidoso` injeta falhas com taxa conhecida só para provar que o harness as detecta (pass^5 cai a 6,5% no dev).
-- Para avaliar um modelo real basta implementar o `Planejador` (Protocol) e rodar o mesmo harness. **Isso não foi feito.**
+- Há um planejador de LLM pronto (`PlanejadorClaude`, API Messages da Anthropic) e um workflow manual (`avaliar-llm`) que o roda na nuvem do GitHub com o mesmo harness. **Está implementado e testado com um cliente falso; nenhuma execução contra um modelo real foi feita**, então não existe número de LLM neste repositório. Como rodar: `docs/AVALIACAO.md`.
 
 ## Estrutura
 
@@ -87,7 +87,7 @@ src/margem_real/
   cli.py          # relatório em Markdown e CSV
   pipeline/       # contratos, armazém DuckDB, controles, logs JSON
   agent/          # ferramentas, planejadores, evals (tarefas, graders, métricas)
-tests/            # 119 testes: contas manuais, propriedades (Hypothesis), pipeline, agente
+tests/            # 130 testes: contas manuais, propriedades (Hypothesis), pipeline, agente
 docs/ evals/ scripts/ DATASHEET.md SECURITY.md CHANGELOG.md AUDITORIA.md
 ```
 
@@ -97,7 +97,7 @@ docs/ evals/ scripts/ DATASHEET.md SECURITY.md CHANGELOG.md AUDITORIA.md
 |---|---|---|
 | Controladoria e precificação | Margem de contribuição, preço mínimo e sugerido, Simples Anexo I, matriz de controles (inspirada no COSO 2013), premissas e limites | ST, DIFAL, fator R, transição CBS/IBS, calendário fiscal, revisão por contador |
 | Engenharia de dados | Contratos, quarentena, idempotência, upsert transacional, linhagem, conciliação, SLA de frescor, lock file, CI em matriz | Orquestrador (Airflow/Dagster), carga incremental em volume, nuvem, dbt, banco compartilhado |
-| Agentes de IA | Camada de ferramentas somente leitura com erros acionáveis; harness com pass@k/pass^k, held-out, graders por estado final | Um LLM real no loop, avaliação humana, red-teaming, custo/latência |
+| Agentes de IA | Camada de ferramentas somente leitura com erros acionáveis; harness com pass@k/pass^k, held-out, graders por estado final | Resultado de um LLM real (o planejador existe, falta executar), avaliação humana, red-teaming |
 
 ## Decisões de projeto
 

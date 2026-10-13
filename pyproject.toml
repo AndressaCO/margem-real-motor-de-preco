@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "margem-real"
-version = "0.2.0"
+version = "0.3.0"
 description = "Preço mínimo e sugerido por SKU e canal, com margem de contribuição em SQL (DuckDB). Dados 100% sintéticos."
 readme = "README.md"
 requires-python = ">=3.11"

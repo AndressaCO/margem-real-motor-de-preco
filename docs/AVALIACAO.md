@@ -35,11 +35,22 @@ Leitura:
 - **held-out 36,4%** (4 de 11): o número que importa. Falhas: `h1, h3, h4, h5, h9, h11` por roteamento (o planejador devolve esclarecimento ou recusa em vez do resultado) e `h2` com **resposta silenciosamente errada** (87,5 em vez de 96,88, ignorando o custo fixo). Este último é o tipo de falha que um grader só de formato não pegaria.
 - **ruidoso**: injeta erro em 25% das chamadas. `pass^5` cai a 6,5% no dev, o que confirma que o harness enxerga falhas intermitentes que `pass@k` mascararia.
 
-## O que falta para avaliar um LLM
+## Avaliar um LLM real (implementado; ainda NÃO executado)
 
-1. Implementar `Planejador` chamando a API do modelo com o `ESPECIFICACOES` das ferramentas.
-2. Rodar `python -m margem_real.agent.evals` com o novo planejador, com o mesmo held-out.
-3. Revisar manualmente uma amostra das transcrições (graders automáticos também erram).
-4. Registrar custo e latência por tarefa — hoje não medidos.
+`PlanejadorClaude` (`src/margem_real/agent/llm.py`) é um `Planejador` que chama a API Messages da Anthropic. O modelo recebe as 6 ferramentas `margem_*` e uma 7ª, `responder(status, texto, dados)`, que encerra o atendimento; os avaliadores por estado final são os mesmos do stand-in. A chave vem de `ANTHROPIC_API_KEY`.
 
-Nada disso foi feito.
+**Na nuvem do GitHub (recomendado):**
+
+1. Em *Settings > Secrets and variables > Actions*, crie o secret `ANTHROPIC_API_KEY`.
+2. Em *Actions > avaliar-llm > Run workflow*, informe o modelo (ex.: `claude-sonnet-5-5`), `trials` (padrão 3) e `split` (`heldout`, `dev` ou `todos`).
+3. O relatório aparece no resumo da execução; relatório, resultados e transcrições ficam no artefato `avaliacao-llm`.
+
+**Local:** `ANTHROPIC_API_KEY=... python -m margem_real.agent.evals --llm-modelo <id> --trials 3 --split heldout`. A saída vai para `evals/llm/<modelo>/` e **não** altera `evals/resultados.json` (que continua sendo o resultado determinístico, sem chave).
+
+**Custo:** cresce com tarefas × trials × passos. Comece por `heldout` com 1–3 trials.
+
+**O que foi verificado:** encanamento ponta a ponta com um cliente falso que reproduz o `PlanejadorRegras` pela interface da API (dev pass^2 = 100%, nenhum estado alterado), leitura de resposta, repetição em 429, e que a chave não vaza em erros (11 testes em `tests/test_llm.py`).
+
+**O que NÃO foi verificado:** qualquer execução contra um modelo real (não havia chave neste ambiente), o formato exato de resposta da API em produção além do documentado, custo e latência reais, e a qualidade do prompt de sistema. Depois de rodar: revise à mão uma amostra das transcrições (avaliadores automáticos também erram) e registre o resultado em `VERIFICACAO.md`.
+
+Limites de interpretação: uma execução única de um modelo é uma medida pontual; ela varia com a versão do modelo, a temperatura e a carga da API.
