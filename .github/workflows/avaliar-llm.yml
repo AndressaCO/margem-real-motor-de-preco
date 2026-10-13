@@ -85,6 +85,14 @@ jobs:
         if: always()
         run: |
           for f in evals/llm/*/RELATORIO.md; do [ -f "$f" ] && cat "$f" >> "$GITHUB_STEP_SUMMARY"; done; true
+      - name: Relatório também como anotação (legível sem baixar o artefato)
+        if: always()
+        run: |
+          for f in evals/llm/*/RELATORIO.md; do
+            [ -f "$f" ] || continue
+            msg=$(cat "$f" | sed ':a;N;$!ba;s/%/%25/g;s/\r/%0D/g;s/\n/%0A/g')
+            echo "::notice title=Relatório da avaliação::$msg"
+          done
       - uses: actions/upload-artifact@v6
         if: always()
         with:
