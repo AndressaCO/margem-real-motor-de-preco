@@ -12,7 +12,7 @@ Formato inspirado em Keep a Changelog. Datas no formato dd/mm/aaaa.
 - 20 testes com cliente falso (total: 144 testes, 99% de cobertura).
 
 ### Conhecido
-- Uma execução real (Gemini `gemini-3.5-flash-lite`, held-out, 11/11, 1 trial) em 13/10/2026; ver `docs/RESULTADO-LLM-GEMINI.md`. Nenhuma com o Claude.
+- Duas execuções reais (Gemini `gemini-3.5-flash-lite`, 13/10/2026): held-out 11/11 (1 trial) e 42 tarefas × 3 trials (dev pass^3 90,3%, held-out 11/11; falhas analisadas); ver `docs/RESULTADO-LLM-GEMINI.md`. Nenhuma com o Claude.
 
 ## 0.2.0 — 13/10/2026
 

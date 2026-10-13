@@ -4,7 +4,7 @@
 
 > **Dados 100% sintéticos.** Alíquotas, comissões e fretes são ilustrativos e não representam nenhuma empresa nem tabela de marketplace. Troque pelos seus números e valide com seu contador.
 
-**English summary:** a small, fully reproducible stack in three layers. (1) **Controllership**: contribution margin, break-even price and Simples Nacional effective rate per SKU × channel. (2) **Data engineering**: a contract-checked, idempotent load pipeline (DuckDB) with quarantine, lineage, reconciliation and freshness controls. (3) **AI-agent evaluation**: a read-only tool layer plus an eval harness (pass@k / pass^k, held-out split, state-based graders). The agent's planner is a rule-based **stand-in, not a language model**; the evals are there to show how one would be tested. Synthetic data, 144 tests, 99% coverage, CI on Python 3.11–3.13. LLM planners are implemented and unit-tested with a fake client; **one** real run exists (Gemini, held-out, 11/11, single trial, see `docs/RESULTADO-LLM-GEMINI.md`), too small and possibly contaminated to be called a benchmark.
+**English summary:** a small, fully reproducible stack in three layers. (1) **Controllership**: contribution margin, break-even price and Simples Nacional effective rate per SKU × channel. (2) **Data engineering**: a contract-checked, idempotent load pipeline (DuckDB) with quarantine, lineage, reconciliation and freshness controls. (3) **AI-agent evaluation**: a read-only tool layer plus an eval harness (pass@k / pass^k, held-out split, state-based graders). The agent's planner is a rule-based **stand-in, not a language model**; the evals are there to show how one would be tested. Synthetic data, 144 tests, 99% coverage, CI on Python 3.11–3.13. LLM planners are implemented and unit-tested with a fake client; **two** real runs exist (Gemini free tier; second: 42 tasks × 3 trials, dev pass^3 90,3%, held-out 11/11; failures analysed, see `docs/RESULTADO-LLM-GEMINI.md`), too small and possibly contaminated to be called a benchmark.
 
 ## Três camadas, um problema
 
@@ -97,7 +97,7 @@ docs/ evals/ scripts/ DATASHEET.md SECURITY.md CHANGELOG.md AUDITORIA.md
 |---|---|---|
 | Controladoria e precificação | Margem de contribuição, preço mínimo e sugerido, Simples Anexo I, matriz de controles (inspirada no COSO 2013), premissas e limites | ST, DIFAL, fator R, transição CBS/IBS, calendário fiscal, revisão por contador |
 | Engenharia de dados | Contratos, quarentena, idempotência, upsert transacional, linhagem, conciliação, SLA de frescor, lock file, CI em matriz | Orquestrador (Airflow/Dagster), carga incremental em volume, nuvem, dbt, banco compartilhado |
-| Agentes de IA | Camada de ferramentas somente leitura com erros acionáveis; harness com pass@k/pass^k, held-out, graders por estado final | Mais de uma execução de LLM e revisão manual das transcrições (há 1 execução, 11 tarefas), avaliação humana, red-teaming |
+| Agentes de IA | Camada de ferramentas somente leitura com erros acionáveis; harness com pass@k/pass^k, held-out, graders por estado final | Mais de uma execução de LLM e revisão manual das transcrições (há 2 execuções, mesmo modelo e dia; só uma amostra das transcrições lida), avaliação humana, red-teaming |
 
 ## Decisões de projeto
 

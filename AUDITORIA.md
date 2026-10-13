@@ -1,6 +1,6 @@
 # Auditoria automatizada
 
-Gerada por `scripts/auditar.py` em 13/10/2026 23:08 UTC. Modo: completo.
+Gerada por `scripts/auditar.py` em 13/10/2026 23:44 UTC. Modo: completo.
 
 Resultado: 20 OK, 0 falhas, 0 puladas de 20.
 
@@ -10,7 +10,7 @@ Resultado: 20 OK, 0 falhas, 0 puladas de 20.
 |---|---|---|---|---|
 | C01 | Qualidade | Lint e formatação (ruff) | OK | ruff check e format limpos |
 | C02 | Qualidade | Tipagem estática (mypy) | OK | Success: no issues found in 28 source files |
-| C03 | Qualidade | Testes + cobertura ≥ 95% | OK | 144 passed in 89.95s (0:01:29) | TOTAL                                      1215     13    99% |
+| C03 | Qualidade | Testes + cobertura ≥ 95% | OK | 144 passed in 88.09s (0:01:28) | TOTAL                                      1215     13    99% |
 | C04 | Reprodutibilidade | Relatório regenerado = versionado | OK | relatório e CSV idênticos aos versionados |
 | C05 | Reprodutibilidade | CI com matriz 3.11–3.13 e gates | OK | matriz 3.11–3.13, mypy, gate de cobertura e auditoria |
 | C06 | Reprodutibilidade | Lock file de dependências | OK | 22 dependências fixadas |

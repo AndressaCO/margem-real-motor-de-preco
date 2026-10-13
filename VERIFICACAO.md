@@ -75,6 +75,7 @@ O `marketplace_a` (16% de comissão + R$ 6 fixos) e o `marketplace_b` (12%) fica
 | PRÁTICA DE MERCADO | Tarifas Shopee e Mercado Livre da seção 2 | ecommercenapratica.com, 28 e 29/07/2026 |
 | FATO (empírico, local) | 144 testes passam (119 + 24 dos planejadores LLM, com cliente falso); cobertura 99%; ruff e mypy limpos; relatório regenerado é idêntico ao versionado | `scripts/auditar.py`, 13/10/2026 |
 | FATO (empírico, nuvem) | `PlanejadorChat` + Gemini `gemini-3.5-flash-lite`, held-out: 11/11, 1 trial, 0 estados alterados, 21 chamadas; IC 95% de Clopper-Pearson ≈ 71,5–100% (0,025^(1/11) = 0,7151) | Execução 38468776708 do workflow `avaliar-llm`, 13/10/2026; `docs/RESULTADO-LLM-GEMINI.md` |
+| FATO (empírico, nuvem) | Rodada 2, mesmo modelo: 42 tarefas × 3 trials, 238 chamadas, 0 estados alterados; dev pass@1 93,5% e pass^3 90,3% (28/31, IC ≈ 74,2–98,0%), held-out 11/11; 3 tarefas falharam (ng10 parâmetro inventado; ng1 e pj2 de contrato/especificação); amostra de transcrições lida | Execução 38482878709 do workflow `avaliar-llm`, 13/10/2026; `docs/RESULTADO-LLM-GEMINI.md` |
 | NÃO VERIFICADO | Revisão manual das transcrições do Gemini; contaminação entre prompt e tarefas; qualquer execução com o Claude; estabilidade entre dias | Pendente |
 | FATO (matemático) | pass@k = 1 − C(n−c,k)/C(n,k); pass^k = C(c,k)/C(n,k) | Chen et al., arXiv:2107.03374; τ-bench, arXiv:2406.12045 |
 | FATO | COSO 2013: 5 componentes e 17 princípios | Resumo secundário (onspring.com). `docs/CONTROLES.md` é *inspirada* no COSO, não o implementa |

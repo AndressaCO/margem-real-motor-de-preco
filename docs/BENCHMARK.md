@@ -60,7 +60,7 @@ Executada ao fechar esta versão; ver [`AUDITORIA.md`](../AUDITORIA.md) e o stat
 
 | Lacuna | Por que não foi fechada |
 |---|---|
-| Um único LLM real avaliado, 1 execução | Gemini no held-out: 11/11 (IC 95% ≈ 71,5–100%); prompt e tarefas do mesmo autor; sem revisão manual das transcrições (`docs/RESULTADO-LLM-GEMINI.md`) |
+| Um único LLM real avaliado, 2 execuções no mesmo dia | Gemini: held-out 11/11 (IC 95% ≈ 71,5–100%), dev pass^3 28/31 (IC ≈ 74,2–98,0%), 1 parâmetro inventado em ng10; prompt e tarefas do mesmo autor; sem revisão manual das transcrições (`docs/RESULTADO-LLM-GEMINI.md`) |
 | Held-out em 36,4% | É um resultado, não um defeito escondido; melhorar o planejador de regras seria ajustar ao held-out e invalidá-lo |
 | Python 3.10 e pandas < 2.3 não suportados | Não testei; declarar suporte seria afirmar sem evidência |
 | Windows/macOS | Não testados |

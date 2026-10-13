@@ -35,9 +35,9 @@ Leitura:
 - **held-out 36,4%** (4 de 11): o número que importa. Falhas: `h1, h3, h4, h5, h9, h11` por roteamento (o planejador devolve esclarecimento ou recusa em vez do resultado) e `h2` com **resposta silenciosamente errada** (87,5 em vez de 96,88, ignorando o custo fixo). Este último é o tipo de falha que um grader só de formato não pegaria.
 - **ruidoso**: injeta erro em 25% das chamadas. `pass^5` cai a 6,5% no dev, o que confirma que o harness enxerga falhas intermitentes que `pass@k` mascararia.
 
-## Avaliar um LLM real (implementado; 1 execução feita, com ressalvas)
+## Avaliar um LLM real (implementado; 2 execuções feitas, com ressalvas)
 
-Resultado da única execução (Gemini, held-out, 11/11, 1 trial): `docs/RESULTADO-LLM-GEMINI.md`. Leia as ressalvas antes de citá-lo.
+Resultado das duas execuções (Gemini; rodada 2: 42 tarefas × 3 trials, dev pass^3 90,3%, held-out 11/11): `docs/RESULTADO-LLM-GEMINI.md`. Leia as ressalvas antes de citá-lo.
 
 `PlanejadorClaude` (`src/margem_real/agent/llm.py`) é um `Planejador` que chama a API Messages da Anthropic. O modelo recebe as 6 ferramentas `margem_*` e uma 7ª, `responder(status, texto, dados)`, que encerra o atendimento; os avaliadores por estado final são os mesmos do stand-in. A chave vem de `ANTHROPIC_API_KEY`.
 
