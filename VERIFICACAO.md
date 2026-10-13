@@ -12,7 +12,7 @@ Ambiente: Python 3.11, 3.12 e 3.13; pandas 2.3.3 e 3.0.6; DuckDB 1.5.6; pytest 9
 | SQL × Python | Preço mínimo e margem de 40 pares recalculados em `pricing.py` | Diferença < R$ 0,011 e < 0,2 p.p. |
 | Identidade contábil | receita − CMV − despesas = margem, linha a linha | Erro máximo < R$ 0,02 |
 | Números do relatório | Recontagem independente em pandas puro | Receita idêntica (R$ 1.671.731,82) e 667 pares; margem R$ 182.257,91 contra R$ 182.257,81 no SQL |
-| Versões de Python | Suíte completa em ambiente novo: 3.12 (pandas 3.0.6 e 2.3.3) e 3.11 (pandas 3.0.6) | 118 aprovados; 3.13 coberto pela matriz do CI (ver seção 5) |
+| Versões de Python | Suíte completa em ambiente novo: 3.12 (pandas 3.0.6 e 2.3.3) e 3.11 (pandas 3.0.6) | 118 aprovados; 3.13 coberto pela matriz do CI (CI verde, ver seção 5) |
 | Reprodutibilidade | Mesma semente gera os mesmos dados; instalação limpa gera o mesmo relatório | Confere |
 
 **Divergência registrada:** os R$ 0,10 na margem total vêm do `ROUND(…, 2)` por linha no SQL; o pandas soma sem arredondar. Não afeta conclusão alguma.
@@ -87,7 +87,7 @@ O `marketplace_a` (16% de comissão + R$ 6 fixos) e o `marketplace_b` (12%) fica
 - **Amostra de vagas.** São 12 vagas em 3 páginas, com trechos truncados, sem recorte estatístico.
 - **Regime tributário real.** O projeto não trata ST, DIFAL, fator R, nem a transição CBS/IBS da LC 214/2025.
 - **Windows e macOS.** Não foram testados.
-- **CI da versão 0.2.0.** A matriz 3.11–3.13 e o job de reprodutibilidade só contam como verificados depois de rodarem no GitHub; até lá, valem os testes locais descritos na seção 6.
+- **CI da versão 0.2.0 — verificado em 13/10/2026.** Matriz 3.11, 3.12 e 3.13 e job de reprodutibilidade (lock file, relatório idêntico, demonstração do pipeline, portão pass^3 do dev, auditoria rápida) passaram no GitHub Actions no commit "Corrige ordem não determinística do relatório" (run 38408166420). Duas execuções anteriores falharam no job de reprodutibilidade, o que revelou o defeito de ordenação descrito em `CHANGELOG.md`.
 - **Python 3.10 e pandas < 2.3.** Não suportados nem testados (pandas 2.0.3 não instala neste ambiente).
 - **LLM real.** O planejador é um stand-in de regras; nenhuma métrica descreve um modelo de linguagem.
 - **Revisão independente.** A auditoria (`docs/BENCHMARK.md`) é autoauditoria + script.
@@ -106,7 +106,7 @@ O `marketplace_a` (16% de comissão + R$ 6 fixos) e o `marketplace_b` (12%) fica
 | Ambientes limpos | venv novo em 3.12/pandas 3.0.6, 3.12/pandas 2.3.3, 3.11/pandas 3.0.6 | 118 aprovados; achou o bug do `--trials 2` |
 | Links relativos dos docs | `scripts/auditar.py` (C18) | Ver `AUDITORIA.md` |
 
-**Não verificado nesta rodada:** CI no GitHub para a 0.2.0; Python 3.13 localmente; Windows/macOS; links externos por `curl` (o shell do ambiente só alcança registros de pacotes; as fontes de `docs/BENCHMARK.md` foram abertas por ferramenta de leitura web em 13/10/2026, não por script, e podem mudar); qualquer LLM real.
+**Não verificado nesta rodada:** Python 3.13 localmente (só no CI); Windows/macOS; links externos por `curl` (o shell do ambiente só alcança registros de pacotes; as fontes de `docs/BENCHMARK.md` foram abertas por ferramenta de leitura web em 13/10/2026, não por script, e podem mudar); qualquer LLM real.
 
 ## 7. Sobre "top 0,01%"
 
