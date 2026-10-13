@@ -1,7 +1,7 @@
 # Verificação
 
-Primeira rodada: 13/10/2026 (código e contas). Segunda rodada: 13/10/2026 (fontes, parâmetros e versões de Python).
-Ambiente: Python 3.13 (principal), 3.12 e 3.11; pandas 3.0.5, DuckDB 1.5.6, pytest 9.1.1, ruff.
+Rodada 1: 13/10/2026 (código e contas). Rodada 2: 13/10/2026 (fontes e parâmetros). Rodada 3: 13/10/2026 (pipeline, agente, avaliação, Simples; ver seção 7).
+Ambiente: Python 3.11, 3.12 e 3.13; pandas 2.3.3 e 3.0.6; DuckDB 1.5.6; pytest 9.1.1; ruff 0.17.0; mypy 2.4.0.
 
 ## 1. Código e contas (verificado)
 
@@ -12,7 +12,7 @@ Ambiente: Python 3.13 (principal), 3.12 e 3.11; pandas 3.0.5, DuckDB 1.5.6, pyte
 | SQL × Python | Preço mínimo e margem de 40 pares recalculados em `pricing.py` | Diferença < R$ 0,011 e < 0,2 p.p. |
 | Identidade contábil | receita − CMV − despesas = margem, linha a linha | Erro máximo < R$ 0,02 |
 | Números do relatório | Recontagem independente em pandas puro | Receita idêntica (R$ 1.671.731,82) e 667 pares; margem R$ 182.257,91 contra R$ 182.257,81 no SQL |
-| Versões de Python | `pytest` + `ruff` em ambiente novo, em 3.11, 3.12 e 3.13 | 26 aprovados e ruff limpo nas três |
+| Versões de Python | Suíte completa em ambiente novo: 3.12 (pandas 3.0.6 e 2.3.3) e 3.11 (pandas 3.0.6) | 118 aprovados; 3.13 coberto pela matriz do CI (ver seção 5) |
 | Reprodutibilidade | Mesma semente gera os mesmos dados; instalação limpa gera o mesmo relatório | Confere |
 
 **Divergência registrada:** os R$ 0,10 na margem total vêm do `ROUND(…, 2)` por linha no SQL; o pandas soma sem arredondar. Não afeta conclusão alguma.
@@ -30,7 +30,9 @@ Ambiente: Python 3.13 (principal), 3.12 e 3.11; pandas 3.0.5, DuckDB 1.5.6, pyte
 | 5ª | até R$ 3.600.000,00 | 14,30% | R$ 87.300,00 |
 | 6ª | até R$ 4.800.000,00 | 19,00% | R$ 378.000,00 |
 
-Alíquota efetiva = (RBT12 × alíquota − deduzir) / RBT12. Conta refeita: R$ 500 mil → 6,73%; R$ 1 milhão → 8,45%; R$ 1,8 milhão → 9,45%; R$ 3,6 milhões → 11,87%; R$ 4,8 milhões → 11,12%.
+Alíquota efetiva = (RBT12 × alíquota − deduzir) / RBT12. Conta refeita: R$ 500 mil → 6,73%; R$ 1 milhão → 8,45%; R$ 1,8 milhão → 9,45%; R$ 3,6 milhões → 11,875%; R$ 4,8 milhões → 11,125% (valores exatos; a versão anterior deste arquivo trazia 11,87% e 11,12%, arredondados errado).
+
+**Descontinuidade na 6ª faixa — FATO:** a coluna de ICMS da repartição da 6ª faixa é "-" (Planalto, consultado em 13/10/2026), e a alíquota efetiva calculada **cai** de 11,875% para ~8,5% ao cruzar R$ 3,6 mi. **HIPÓTESE:** o ICMS passa a ser recolhido fora do DAS acima desse limite; confirmar com contador. O código reproduz a tabela e documenta o salto em teste, não o "corrige".
 
 - O `imposto` de 8% (marketplaces e site) corresponde a uma empresa com RBT12 em torno de R$ 1 milhão. O de 10% (B2B) cabe em RBT12 entre R$ 1,8 e R$ 3,6 milhões.
 - **Inconsistência assumida:** no Simples a alíquota efetiva é a mesma para todos os canais da empresa; eu usei 8% e 10% por canal só para dar variação didática. O resultado por canal mistura, portanto, efeito de imposto e de estrutura de custo. Empresas fora do Simples, ou com ST/DIFAL, têm outra conta. Revisão de contador necessária.
@@ -71,6 +73,10 @@ O `marketplace_a` (16% de comissão + R$ 6 fixos) e o `marketplace_b` (12%) fica
 | PRÁTICA DE MERCADO | Recrutadores valorizam poucos projetos com pergunta de negócio, README claro, testes e impacto | Data Engineer Academy (2026); Placement Preparation (2026) |
 | PRÁTICA DE MERCADO | Vagas de BI pedem Power BI, DAX, Power Query, SQL; Python como diferencial; vaga remota sênior pede SQL, Python, Snowflake/Databricks | Vagas.com.br, Empregando Brasil (03/06/2026), Virtual Vocations (06/07/2026) |
 | PRÁTICA DE MERCADO | Tarifas Shopee e Mercado Livre da seção 2 | ecommercenapratica.com, 28 e 29/07/2026 |
+| FATO (empírico, local) | 118 testes passam; cobertura 99%; ruff e mypy limpos; relatório regenerado é idêntico ao versionado | `scripts/auditar.py`, 13/10/2026 |
+| FATO (matemático) | pass@k = 1 − C(n−c,k)/C(n,k); pass^k = C(c,k)/C(n,k) | Chen et al., arXiv:2107.03374; τ-bench, arXiv:2406.12045 |
+| FATO | COSO 2013: 5 componentes e 17 princípios | Resumo secundário (onspring.com). `docs/CONTROLES.md` é *inspirada* no COSO, não o implementa |
+| FATO (local) | `pip-audit` sem vulnerabilidades conhecidas no lock file | Execução em 13/10/2026 |
 | HIPÓTESE | Este portfólio aumenta a taxa de convites para entrevistas | Sem teste. Medir: visitas e convites em 30 dias |
 | HIPÓTESE | Dados sintéticos com método aberto convencem mais que descrição sem código | Sem teste |
 
@@ -80,9 +86,28 @@ O `marketplace_a` (16% de comissão + R$ 6 fixos) e o `marketplace_b` (12%) fica
 - **Eficácia do portfólio.** Nenhuma fonte quantifica o efeito de um portfólio no GitHub sobre entrevistas; as fontes são qualitativas.
 - **Amostra de vagas.** São 12 vagas em 3 páginas, com trechos truncados, sem recorte estatístico.
 - **Regime tributário real.** O projeto não trata ST, DIFAL, fator R, nem a transição CBS/IBS da LC 214/2025.
-- **Windows e macOS.** Não foram testados. O CI do GitHub (Ubuntu, Python 3.12) passou no primeiro push, em 13/10/2026.
+- **Windows e macOS.** Não foram testados.
+- **CI da versão 0.2.0.** A matriz 3.11–3.13 e o job de reprodutibilidade só contam como verificados depois de rodarem no GitHub; até lá, valem os testes locais descritos na seção 6.
+- **Python 3.10 e pandas < 2.3.** Não suportados nem testados (pandas 2.0.3 não instala neste ambiente).
+- **LLM real.** O planejador é um stand-in de regras; nenhuma métrica descreve um modelo de linguagem.
+- **Revisão independente.** A auditoria (`docs/BENCHMARK.md`) é autoauditoria + script.
 - **Links do README do perfil.** Usuário do GitHub (`AndressaCO`) confirmado pela API; LinkedIn e site vieram da sua informação e não foram abertos. O link do repositório só funciona depois da publicação.
 
-## 6. Sobre "top 0,01%"
+## 6. Rodada 3 — o que foi verificado e como
+
+| Item | Como | Resultado |
+|---|---|---|
+| Invariante do pipeline: entrada = carregadas + quarentena | Testes de pipeline e de propriedade | Confere |
+| Idempotência: reenviar o mesmo lote (em outra ordem) não duplica | Hash de conteúdo independente da ordem; teste | Confere |
+| Bloqueio por rejeição > 5% e queda de volume > 50% | Testes com lotes sintéticos | Confere |
+| Referências do eval independentes das ferramentas | pandas + `Fraction` e constantes à mão | Confere |
+| Held-out | 11 tarefas escritas depois do planejador | 36,4% (resultado, não ajustado) |
+| Harness detecta falha | Planejador ruidoso com p=0,25 | pass^5 dev 6,5% |
+| Ambientes limpos | venv novo em 3.12/pandas 3.0.6, 3.12/pandas 2.3.3, 3.11/pandas 3.0.6 | 118 aprovados; achou o bug do `--trials 2` |
+| Links relativos dos docs | `scripts/auditar.py` (C18) | Ver `AUDITORIA.md` |
+
+**Não verificado nesta rodada:** CI no GitHub para a 0.2.0; Python 3.13 localmente; Windows/macOS; links externos por `curl` (o shell do ambiente só alcança registros de pacotes; as fontes de `docs/BENCHMARK.md` foram abertas por ferramenta de leitura web em 13/10/2026, não por script, e podem mudar); qualquer LLM real.
+
+## 7. Sobre "top 0,01%"
 
 Este material **não afirma** esse posicionamento. Não há métrica que classifique candidatos nesse percentil, e as evidências são qualitativas. O que se sustenta: o projeto cumpre os critérios que as fontes citam como diferenciais (pergunta de negócio, conta aberta, testes, limites declarados).

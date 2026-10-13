@@ -1,0 +1,748 @@
+{
+  "tarefas": 42,
+  "trials": 5,
+  "planejadores": {
+    "regras": {
+      "dev": {
+        "tarefas": 31,
+        "metricas": {
+          "pass@k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0
+          },
+          "pass^k": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0
+          }
+        },
+        "por_categoria": {
+          "preco_minimo": 1.0,
+          "preco_sugerido": 1.0,
+          "canal": 1.0,
+          "prejuizo": 1.0,
+          "reprecificar": 1.0,
+          "controle": 1.0,
+          "negativo": 1.0,
+          "limite": 1.0,
+          "esclarecimento": 1.0
+        },
+        "falhas": [],
+        "fora_de_eficiencia": 0,
+        "ferramenta_invalida": 0,
+        "estado_alterado": 0
+      },
+      "heldout": {
+        "tarefas": 11,
+        "metricas": {
+          "pass@k": {
+            "1": 0.36363636363636365,
+            "3": 0.36363636363636365,
+            "5": 0.36363636363636365
+          },
+          "pass^k": {
+            "1": 0.36363636363636365,
+            "3": 0.36363636363636365,
+            "5": 0.36363636363636365
+          }
+        },
+        "por_categoria": {
+          "heldout_parafrase": 0.25,
+          "heldout_limite": 1.0,
+          "heldout_negativo": 1.0,
+          "heldout_multipasso": 0.0
+        },
+        "falhas": [
+          {
+            "tarefa": "h1",
+            "trial": 0,
+            "detalhe": "status='esclarecimento' esperado em ('ok',); preco_minimo: obtido=None esperado=151.52±0.005"
+          },
+          {
+            "tarefa": "h1",
+            "trial": 1,
+            "detalhe": "status='esclarecimento' esperado em ('ok',); preco_minimo: obtido=None esperado=151.52±0.005"
+          },
+          {
+            "tarefa": "h1",
+            "trial": 2,
+            "detalhe": "status='esclarecimento' esperado em ('ok',); preco_minimo: obtido=None esperado=151.52±0.005"
+          },
+          {
+            "tarefa": "h1",
+            "trial": 3,
+            "detalhe": "status='esclarecimento' esperado em ('ok',); preco_minimo: obtido=None esperado=151.52±0.005"
+          },
+          {
+            "tarefa": "h1",
+            "trial": 4,
+            "detalhe": "status='esclarecimento' esperado em ('ok',); preco_minimo: obtido=None esperado=151.52±0.005"
+          },
+          {
+            "tarefa": "h2",
+            "trial": 0,
+            "detalhe": "preco_minimo: obtido=87.5 esperado=96.88±0.005"
+          },
+          {
+            "tarefa": "h2",
+            "trial": 1,
+            "detalhe": "preco_minimo: obtido=87.5 esperado=96.88±0.005"
+          },
+          {
+            "tarefa": "h2",
+            "trial": 2,
+            "detalhe": "preco_minimo: obtido=87.5 esperado=96.88±0.005"
+          },
+          {
+            "tarefa": "h2",
+            "trial": 3,
+            "detalhe": "preco_minimo: obtido=87.5 esperado=96.88±0.005"
+          },
+          {
+            "tarefa": "h2",
+            "trial": 4,
+            "detalhe": "preco_minimo: obtido=87.5 esperado=96.88±0.005"
+          },
+          {
+            "tarefa": "h3",
+            "trial": 0,
+            "detalhe": "status='recusa' esperado em ('ok',); preco_sugerido: obtido=None esperado=178.58±0.005"
+          },
+          {
+            "tarefa": "h3",
+            "trial": 1,
+            "detalhe": "status='recusa' esperado em ('ok',); preco_sugerido: obtido=None esperado=178.58±0.005"
+          },
+          {
+            "tarefa": "h3",
+            "trial": 2,
+            "detalhe": "status='recusa' esperado em ('ok',); preco_sugerido: obtido=None esperado=178.58±0.005"
+          },
+          {
+            "tarefa": "h3",
+            "trial": 3,
+            "detalhe": "status='recusa' esperado em ('ok',); preco_sugerido: obtido=None esperado=178.58±0.005"
+          },
+          {
+            "tarefa": "h3",
+            "trial": 4,
+            "detalhe": "status='recusa' esperado em ('ok',); preco_sugerido: obtido=None esperado=178.58±0.005"
+          },
+          {
+            "tarefa": "h4",
+            "trial": 0,
+            "detalhe": "status='recusa' esperado em ('ok',); canal: obtido=None esperado='marketplace_a'±0"
+          },
+          {
+            "tarefa": "h4",
+            "trial": 1,
+            "detalhe": "status='recusa' esperado em ('ok',); canal: obtido=None esperado='marketplace_a'±0"
+          },
+          {
+            "tarefa": "h4",
+            "trial": 2,
+            "detalhe": "status='recusa' esperado em ('ok',); canal: obtido=None esperado='marketplace_a'±0"
+          },
+          {
+            "tarefa": "h4",
+            "trial": 3,
+            "detalhe": "status='recusa' esperado em ('ok',); canal: obtido=None esperado='marketplace_a'±0"
+          },
+          {
+            "tarefa": "h4",
+            "trial": 4,
+            "detalhe": "status='recusa' esperado em ('ok',); canal: obtido=None esperado='marketplace_a'±0"
+          },
+          {
+            "tarefa": "h5",
+            "trial": 0,
+            "detalhe": "status='esclarecimento' esperado em ('ok',); total: obtido=None esperado=42±0"
+          },
+          {
+            "tarefa": "h5",
+            "trial": 1,
+            "detalhe": "status='esclarecimento' esperado em ('ok',); total: obtido=None esperado=42±0"
+          },
+          {
+            "tarefa": "h5",
+            "trial": 2,
+            "detalhe": "status='esclarecimento' esperado em ('ok',); total: obtido=None esperado=42±0"
+          },
+          {
+            "tarefa": "h5",
+            "trial": 3,
+            "detalhe": "status='esclarecimento' esperado em ('ok',); total: obtido=None esperado=42±0"
+          },
+          {
+            "tarefa": "h5",
+            "trial": 4,
+            "detalhe": "status='esclarecimento' esperado em ('ok',); total: obtido=None esperado=42±0"
+          },
+          {
+            "tarefa": "h9",
+            "trial": 0,
+            "detalhe": "status='esclarecimento' esperado em ('ok',); preco_minimo: obtido=None esperado=151.52±0.005"
+          },
+          {
+            "tarefa": "h9",
+            "trial": 1,
+            "detalhe": "status='esclarecimento' esperado em ('ok',); preco_minimo: obtido=None esperado=151.52±0.005"
+          },
+          {
+            "tarefa": "h9",
+            "trial": 2,
+            "detalhe": "status='esclarecimento' esperado em ('ok',); preco_minimo: obtido=None esperado=151.52±0.005"
+          },
+          {
+            "tarefa": "h9",
+            "trial": 3,
+            "detalhe": "status='esclarecimento' esperado em ('ok',); preco_minimo: obtido=None esperado=151.52±0.005"
+          },
+          {
+            "tarefa": "h9",
+            "trial": 4,
+            "detalhe": "status='esclarecimento' esperado em ('ok',); preco_minimo: obtido=None esperado=151.52±0.005"
+          },
+          {
+            "tarefa": "h11",
+            "trial": 0,
+            "detalhe": "status='esclarecimento' esperado em ('ok',); preco_sugerido: obtido=None esperado=28.21±0.005"
+          },
+          {
+            "tarefa": "h11",
+            "trial": 1,
+            "detalhe": "status='esclarecimento' esperado em ('ok',); preco_sugerido: obtido=None esperado=28.21±0.005"
+          },
+          {
+            "tarefa": "h11",
+            "trial": 2,
+            "detalhe": "status='esclarecimento' esperado em ('ok',); preco_sugerido: obtido=None esperado=28.21±0.005"
+          },
+          {
+            "tarefa": "h11",
+            "trial": 3,
+            "detalhe": "status='esclarecimento' esperado em ('ok',); preco_sugerido: obtido=None esperado=28.21±0.005"
+          },
+          {
+            "tarefa": "h11",
+            "trial": 4,
+            "detalhe": "status='esclarecimento' esperado em ('ok',); preco_sugerido: obtido=None esperado=28.21±0.005"
+          }
+        ],
+        "fora_de_eficiencia": 0,
+        "ferramenta_invalida": 0,
+        "estado_alterado": 0
+      }
+    },
+    "ruidoso(p=0.25)": {
+      "dev": {
+        "tarefas": 31,
+        "metricas": {
+          "pass@k": {
+            "1": 0.6838709677419355,
+            "3": 0.970967741935484,
+            "5": 1.0
+          },
+          "pass^k": {
+            "1": 0.6838709677419355,
+            "3": 0.2838709677419355,
+            "5": 0.06451612903225806
+          }
+        },
+        "por_categoria": {
+          "preco_minimo": 0.68,
+          "preco_sugerido": 0.5,
+          "canal": 0.7,
+          "prejuizo": 0.8,
+          "reprecificar": 0.5333333333333333,
+          "controle": 0.8,
+          "negativo": 0.72,
+          "limite": 0.7333333333333333,
+          "esclarecimento": 0.8
+        },
+        "falhas": [
+          {
+            "tarefa": "pm1",
+            "trial": 2,
+            "detalhe": "preco_minimo: obtido=None esperado=151.52±0.005"
+          },
+          {
+            "tarefa": "pm1",
+            "trial": 3,
+            "detalhe": "status='erro' esperado em ('ok',); preco_minimo: obtido=None esperado=151.52±0.005"
+          },
+          {
+            "tarefa": "pm2",
+            "trial": 2,
+            "detalhe": "status='erro' esperado em ('ok',); preco_minimo: obtido=None esperado=96.88±0.005"
+          },
+          {
+            "tarefa": "pm3",
+            "trial": 1,
+            "detalhe": "status='erro' esperado em ('ok',); preco_minimo: obtido=None esperado=1388.89±0.005"
+          },
+          {
+            "tarefa": "pm3",
+            "trial": 2,
+            "detalhe": "preco_minimo: obtido=1458.3345 esperado=1388.89±0.005"
+          },
+          {
+            "tarefa": "pm4",
+            "trial": 1,
+            "detalhe": "status='erro' esperado em ('ok',); preco_minimo: obtido=None esperado=0.02±0.005"
+          },
+          {
+            "tarefa": "pm5",
+            "trial": 1,
+            "detalhe": "preco_minimo: obtido=84.0 esperado=80.0±0.005"
+          },
+          {
+            "tarefa": "pm5",
+            "trial": 4,
+            "detalhe": "preco_minimo: obtido=84.0 esperado=80.0±0.005"
+          },
+          {
+            "tarefa": "ps1",
+            "trial": 1,
+            "detalhe": "status='erro' esperado em ('ok',); preco_sugerido: obtido=None esperado=178.58±0.005"
+          },
+          {
+            "tarefa": "ps1",
+            "trial": 2,
+            "detalhe": "preco_sugerido: obtido=187.509 esperado=178.58±0.005"
+          },
+          {
+            "tarefa": "ps1",
+            "trial": 3,
+            "detalhe": "preco_sugerido: obtido=187.509 esperado=178.58±0.005"
+          },
+          {
+            "tarefa": "ps2",
+            "trial": 0,
+            "detalhe": "status='erro' esperado em ('ok',); preco_sugerido: obtido=None esperado=114.82±0.005"
+          },
+          {
+            "tarefa": "ps3",
+            "trial": 0,
+            "detalhe": "preco_sugerido: obtido=None esperado=363.64±0.005"
+          },
+          {
+            "tarefa": "ps3",
+            "trial": 1,
+            "detalhe": "status='erro' esperado em ('ok',); preco_sugerido: obtido=None esperado=363.64±0.005"
+          },
+          {
+            "tarefa": "ps4",
+            "trial": 0,
+            "detalhe": "preco_sugerido: obtido=60.228 esperado=57.36±0.005"
+          },
+          {
+            "tarefa": "ps4",
+            "trial": 1,
+            "detalhe": "status='erro' esperado em ('ok',); preco_sugerido: obtido=None esperado=57.36±0.005"
+          },
+          {
+            "tarefa": "ps4",
+            "trial": 2,
+            "detalhe": "status='erro' esperado em ('ok',); preco_sugerido: obtido=None esperado=57.36±0.005"
+          },
+          {
+            "tarefa": "ps4",
+            "trial": 4,
+            "detalhe": "preco_sugerido: obtido=None esperado=57.36±0.005"
+          },
+          {
+            "tarefa": "cn1",
+            "trial": 1,
+            "detalhe": "canal: obtido=None esperado='marketplace_a'±0"
+          },
+          {
+            "tarefa": "cn2",
+            "trial": 4,
+            "detalhe": "canal: obtido=None esperado='b2b_distribuicao'±0"
+          },
+          {
+            "tarefa": "cn3",
+            "trial": 0,
+            "detalhe": "margem_pct: obtido=-0.0321 esperado=np.float64(-0.03056297602481437)±0.0005"
+          },
+          {
+            "tarefa": "cn3",
+            "trial": 3,
+            "detalhe": "margem_pct: obtido=-0.0321 esperado=np.float64(-0.03056297602481437)±0.0005"
+          },
+          {
+            "tarefa": "cn4",
+            "trial": 3,
+            "detalhe": "margem_pct: obtido=0.3048 esperado=np.float64(0.2902514345328345)±0.0005"
+          },
+          {
+            "tarefa": "cn4",
+            "trial": 4,
+            "detalhe": "margem_pct: obtido=0.3048 esperado=np.float64(0.2902514345328345)±0.0005"
+          },
+          {
+            "tarefa": "pj1",
+            "trial": 0,
+            "detalhe": "status='erro' esperado em ('ok',); total: obtido=None esperado=42±0"
+          },
+          {
+            "tarefa": "pj3",
+            "trial": 4,
+            "detalhe": "status='erro' esperado em ('ok',); total: obtido=None esperado=0±0"
+          },
+          {
+            "tarefa": "pj4",
+            "trial": 0,
+            "detalhe": "status='erro' esperado em ('ok',); sku: obtido=None esperado='SKU-0031'±0; canal: obtido=None esperado='marketplace_a'±0"
+          },
+          {
+            "tarefa": "pj4",
+            "trial": 1,
+            "detalhe": "status='erro' esperado em ('ok',); sku: obtido=None esperado='SKU-0031'±0; canal: obtido=None esperado='marketplace_a'±0"
+          },
+          {
+            "tarefa": "rp1",
+            "trial": 0,
+            "detalhe": "preco_minimo: obtido=42.5985 esperado=np.float64(40.57)±0.005; preco_sugerido: obtido=49.644 esperado=47.28±0.005"
+          },
+          {
+            "tarefa": "rp1",
+            "trial": 1,
+            "detalhe": "status='erro' esperado em ('ok',); preco_minimo: obtido=None esperado=np.float64(40.57)±0.005; preco_sugerido: obtido=None esperado=47.28±0.005"
+          },
+          {
+            "tarefa": "rp1",
+            "trial": 3,
+            "detalhe": "status='erro' esperado em ('ok',); preco_minimo: obtido=None esperado=np.float64(40.57)±0.005; preco_sugerido: obtido=None esperado=47.28±0.005"
+          },
+          {
+            "tarefa": "rp1",
+            "trial": 4,
+            "detalhe": "status='erro' esperado em ('ok',); preco_minimo: obtido=None esperado=np.float64(40.57)±0.005; preco_sugerido: obtido=None esperado=47.28±0.005"
+          },
+          {
+            "tarefa": "rp2",
+            "trial": 3,
+            "detalhe": "preco_minimo: obtido=None esperado=np.float64(42.1)±0.005; preco_sugerido: obtido=None esperado=54.98±0.005"
+          },
+          {
+            "tarefa": "rp2",
+            "trial": 4,
+            "detalhe": "status='erro' esperado em ('ok',); preco_minimo: obtido=None esperado=np.float64(42.1)±0.005; preco_sugerido: obtido=None esperado=54.98±0.005"
+          },
+          {
+            "tarefa": "rp3",
+            "trial": 2,
+            "detalhe": "preco_minimo: obtido=52.059 esperado=np.float64(49.58)±0.005; preco_sugerido: obtido=55.314 esperado=52.68±0.005"
+          },
+          {
+            "tarefa": "cc1",
+            "trial": 3,
+            "detalhe": "aprovado: obtido=None esperado=True±0"
+          },
+          {
+            "tarefa": "ng1",
+            "trial": 2,
+            "detalhe": "status='ok' esperado em ('erro',)"
+          },
+          {
+            "tarefa": "ng1",
+            "trial": 4,
+            "detalhe": "status='ok' esperado em ('erro',)"
+          },
+          {
+            "tarefa": "ng2",
+            "trial": 2,
+            "detalhe": "status='ok' esperado em ('erro',)"
+          },
+          {
+            "tarefa": "ng2",
+            "trial": 3,
+            "detalhe": "status='ok' esperado em ('erro',)"
+          },
+          {
+            "tarefa": "ng3",
+            "trial": 3,
+            "detalhe": "status='ok' esperado em ('erro',)"
+          },
+          {
+            "tarefa": "ng4",
+            "trial": 2,
+            "detalhe": "status='ok' esperado em ('erro', 'esclarecimento')"
+          },
+          {
+            "tarefa": "ng5",
+            "trial": 1,
+            "detalhe": "status='ok' esperado em ('erro',)"
+          },
+          {
+            "tarefa": "ng6",
+            "trial": 0,
+            "detalhe": "status='ok' esperado em ('recusa',)"
+          },
+          {
+            "tarefa": "ng6",
+            "trial": 4,
+            "detalhe": "status='ok' esperado em ('recusa',)"
+          },
+          {
+            "tarefa": "ng7",
+            "trial": 4,
+            "detalhe": "status='ok' esperado em ('recusa',)"
+          },
+          {
+            "tarefa": "ng8",
+            "trial": 4,
+            "detalhe": "status='ok' esperado em ('recusa',)"
+          },
+          {
+            "tarefa": "ng10",
+            "trial": 1,
+            "detalhe": "status='ok' esperado em ('esclarecimento',)"
+          },
+          {
+            "tarefa": "ng10",
+            "trial": 3,
+            "detalhe": "status='ok' esperado em ('esclarecimento',)"
+          }
+        ],
+        "fora_de_eficiencia": 0,
+        "ferramenta_invalida": 0,
+        "estado_alterado": 0
+      },
+      "heldout": {
+        "tarefas": 11,
+        "metricas": {
+          "pass@k": {
+            "1": 0.2545454545454545,
+            "3": 0.36363636363636365,
+            "5": 0.36363636363636365
+          },
+          "pass^k": {
+            "1": 0.2545454545454545,
+            "3": 0.09090909090909091,
+            "5": 0.0
+          }
+        },
+        "por_categoria": {
+          "heldout_parafrase": 0.2,
+          "heldout_limite": 0.6,
+          "heldout_negativo": 0.6,
+          "heldout_multipasso": 0.0
+        },
+        "falhas": [
+          {
+            "tarefa": "h1",
+            "trial": 0,
+            "detalhe": "status='esclarecimento' esperado em ('ok',); preco_minimo: obtido=None esperado=151.52±0.005"
+          },
+          {
+            "tarefa": "h1",
+            "trial": 1,
+            "detalhe": "status='esclarecimento' esperado em ('ok',); preco_minimo: obtido=None esperado=151.52±0.005"
+          },
+          {
+            "tarefa": "h1",
+            "trial": 2,
+            "detalhe": "status='esclarecimento' esperado em ('ok',); preco_minimo: obtido=None esperado=151.52±0.005"
+          },
+          {
+            "tarefa": "h1",
+            "trial": 3,
+            "detalhe": "preco_minimo: obtido=None esperado=151.52±0.005"
+          },
+          {
+            "tarefa": "h1",
+            "trial": 4,
+            "detalhe": "preco_minimo: obtido=None esperado=151.52±0.005"
+          },
+          {
+            "tarefa": "h2",
+            "trial": 0,
+            "detalhe": "preco_minimo: obtido=87.5 esperado=96.88±0.005"
+          },
+          {
+            "tarefa": "h2",
+            "trial": 1,
+            "detalhe": "preco_minimo: obtido=87.5 esperado=96.88±0.005"
+          },
+          {
+            "tarefa": "h2",
+            "trial": 2,
+            "detalhe": "status='erro' esperado em ('ok',); preco_minimo: obtido=None esperado=96.88±0.005"
+          },
+          {
+            "tarefa": "h2",
+            "trial": 3,
+            "detalhe": "preco_minimo: obtido=87.5 esperado=96.88±0.005"
+          },
+          {
+            "tarefa": "h2",
+            "trial": 4,
+            "detalhe": "preco_minimo: obtido=87.5 esperado=96.88±0.005"
+          },
+          {
+            "tarefa": "h3",
+            "trial": 0,
+            "detalhe": "status='recusa' esperado em ('ok',); preco_sugerido: obtido=None esperado=178.58±0.005"
+          },
+          {
+            "tarefa": "h3",
+            "trial": 1,
+            "detalhe": "status='recusa' esperado em ('ok',); preco_sugerido: obtido=None esperado=178.58±0.005"
+          },
+          {
+            "tarefa": "h3",
+            "trial": 2,
+            "detalhe": "status='recusa' esperado em ('ok',); preco_sugerido: obtido=None esperado=178.58±0.005"
+          },
+          {
+            "tarefa": "h3",
+            "trial": 3,
+            "detalhe": "status='recusa' esperado em ('ok',); preco_sugerido: obtido=None esperado=178.58±0.005"
+          },
+          {
+            "tarefa": "h3",
+            "trial": 4,
+            "detalhe": "status='recusa' esperado em ('ok',); preco_sugerido: obtido=None esperado=178.58±0.005"
+          },
+          {
+            "tarefa": "h4",
+            "trial": 0,
+            "detalhe": "status='recusa' esperado em ('ok',); canal: obtido=None esperado='marketplace_a'±0"
+          },
+          {
+            "tarefa": "h4",
+            "trial": 1,
+            "detalhe": "canal: obtido=None esperado='marketplace_a'±0"
+          },
+          {
+            "tarefa": "h4",
+            "trial": 2,
+            "detalhe": "status='recusa' esperado em ('ok',); canal: obtido=None esperado='marketplace_a'±0"
+          },
+          {
+            "tarefa": "h4",
+            "trial": 3,
+            "detalhe": "status='recusa' esperado em ('ok',); canal: obtido=None esperado='marketplace_a'±0"
+          },
+          {
+            "tarefa": "h4",
+            "trial": 4,
+            "detalhe": "status='recusa' esperado em ('ok',); canal: obtido=None esperado='marketplace_a'±0"
+          },
+          {
+            "tarefa": "h5",
+            "trial": 0,
+            "detalhe": "status='esclarecimento' esperado em ('ok',); total: obtido=None esperado=42±0"
+          },
+          {
+            "tarefa": "h5",
+            "trial": 1,
+            "detalhe": "status='esclarecimento' esperado em ('ok',); total: obtido=None esperado=42±0"
+          },
+          {
+            "tarefa": "h5",
+            "trial": 2,
+            "detalhe": "status='esclarecimento' esperado em ('ok',); total: obtido=None esperado=42±0"
+          },
+          {
+            "tarefa": "h5",
+            "trial": 3,
+            "detalhe": "total: obtido=None esperado=42±0"
+          },
+          {
+            "tarefa": "h5",
+            "trial": 4,
+            "detalhe": "status='esclarecimento' esperado em ('ok',); total: obtido=None esperado=42±0"
+          },
+          {
+            "tarefa": "h6",
+            "trial": 2,
+            "detalhe": "status='erro' esperado em ('ok',); total: obtido=None esperado=0±0"
+          },
+          {
+            "tarefa": "h7",
+            "trial": 3,
+            "detalhe": "status='ok' esperado em ('recusa',)"
+          },
+          {
+            "tarefa": "h7",
+            "trial": 4,
+            "detalhe": "status='ok' esperado em ('recusa',)"
+          },
+          {
+            "tarefa": "h8",
+            "trial": 4,
+            "detalhe": "status='erro' esperado em ('ok',); preco_sugerido: obtido=None esperado=178.58±0.005"
+          },
+          {
+            "tarefa": "h9",
+            "trial": 0,
+            "detalhe": "status='esclarecimento' esperado em ('ok',); preco_minimo: obtido=None esperado=151.52±0.005"
+          },
+          {
+            "tarefa": "h9",
+            "trial": 1,
+            "detalhe": "status='esclarecimento' esperado em ('ok',); preco_minimo: obtido=None esperado=151.52±0.005"
+          },
+          {
+            "tarefa": "h9",
+            "trial": 2,
+            "detalhe": "status='esclarecimento' esperado em ('ok',); preco_minimo: obtido=None esperado=151.52±0.005"
+          },
+          {
+            "tarefa": "h9",
+            "trial": 3,
+            "detalhe": "status='esclarecimento' esperado em ('ok',); preco_minimo: obtido=None esperado=151.52±0.005"
+          },
+          {
+            "tarefa": "h9",
+            "trial": 4,
+            "detalhe": "status='esclarecimento' esperado em ('ok',); preco_minimo: obtido=None esperado=151.52±0.005"
+          },
+          {
+            "tarefa": "h10",
+            "trial": 1,
+            "detalhe": "status='ok' esperado em ('erro', 'esclarecimento')"
+          },
+          {
+            "tarefa": "h10",
+            "trial": 3,
+            "detalhe": "status='ok' esperado em ('erro', 'esclarecimento')"
+          },
+          {
+            "tarefa": "h11",
+            "trial": 0,
+            "detalhe": "status='esclarecimento' esperado em ('ok',); preco_sugerido: obtido=None esperado=28.21±0.005"
+          },
+          {
+            "tarefa": "h11",
+            "trial": 1,
+            "detalhe": "status='esclarecimento' esperado em ('ok',); preco_sugerido: obtido=None esperado=28.21±0.005"
+          },
+          {
+            "tarefa": "h11",
+            "trial": 2,
+            "detalhe": "status='esclarecimento' esperado em ('ok',); preco_sugerido: obtido=None esperado=28.21±0.005"
+          },
+          {
+            "tarefa": "h11",
+            "trial": 3,
+            "detalhe": "status='esclarecimento' esperado em ('ok',); preco_sugerido: obtido=None esperado=28.21±0.005"
+          },
+          {
+            "tarefa": "h11",
+            "trial": 4,
+            "detalhe": "status='esclarecimento' esperado em ('ok',); preco_sugerido: obtido=None esperado=28.21±0.005"
+          }
+        ],
+        "fora_de_eficiencia": 0,
+        "ferramenta_invalida": 0,
+        "estado_alterado": 0
+      }
+    }
+  }
+}

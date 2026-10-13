@@ -4,7 +4,17 @@
 
 > **Dados 100% sintéticos.** Alíquotas, comissões e fretes são ilustrativos e não representam nenhuma empresa nem tabela de marketplace. Troque pelos seus números e valide com seu contador.
 
-**English summary:** SQL (DuckDB) + Python engine that computes contribution margin and a break-even ("minimum") price per SKU × sales channel, then simulates repricing to a target margin. It shows how one flat markup across channels can hide loss-making SKU/channel pairs. Synthetic data, tested (26 tests), reproducible.
+**English summary:** a small, fully reproducible stack in three layers. (1) **Controllership**: contribution margin, break-even price and Simples Nacional effective rate per SKU × channel. (2) **Data engineering**: a contract-checked, idempotent load pipeline (DuckDB) with quarantine, lineage, reconciliation and freshness controls. (3) **AI-agent evaluation**: a read-only tool layer plus an eval harness (pass@k / pass^k, held-out split, state-based graders). The agent's planner is a rule-based **stand-in, not a language model**; the evals are there to show how one would be tested. Synthetic data, 118 tests, 99% coverage, CI on Python 3.11–3.13.
+
+## Três camadas, um problema
+
+| Camada | O que faz | Onde está |
+|---|---|---|
+| Controladoria | Preço mínimo/sugerido, margem por SKU × canal, alíquota efetiva do Simples (Anexo I), matriz de controles C1–C9 | `pricing.py`, `tributos.py`, [`docs/CONTROLES.md`](docs/CONTROLES.md) |
+| Engenharia de dados | Contrato de schema, quarentena por linha, carga idempotente (hash do lote), upsert transacional, bloqueio por taxa de rejeição/queda de volume, linhagem, conciliação, SLA de frescor | `pipeline/`, [`docs/ARQUITETURA.md`](docs/ARQUITETURA.md) |
+| Agente de IA (avaliação) | 6 ferramentas somente leitura, planejador plugável, harness de avaliação com pass@k e pass^k, conjunto held-out | `agent/`, [`docs/AVALIACAO.md`](docs/AVALIACAO.md) |
+
+Decisões registradas em [ADRs](docs/adr/). Metodologia e auditoria: [`docs/BENCHMARK.md`](docs/BENCHMARK.md) e [`AUDITORIA.md`](AUDITORIA.md).
 
 ## A pergunta de negócio
 
@@ -36,34 +46,58 @@ margem líquida = (preço - c - f - preço·d) / preço
 
 Exemplo: `c = 100`, `d = 34%`, `f = 0` → mínimo `100 / 0,66 = R$ 151,52` e sugerido (10%) `100 / 0,56 = R$ 178,58`. Preços arredondam **para cima** ao centavo, para nunca ficar abaixo do ponto de equilíbrio.
 
-## Como rodar
+## Como rodar (quickstart)
 
 ```bash
-pip install -e ".[dev]"
+pip install -e ".[dev]"                      # ou: pip install -r requirements-dev.lock && pip install -e . --no-deps
 python -m margem_real --skus 200 --markup 1.8 --margem-alvo 0.10 --semente 42
-pytest && ruff check .
+python -m margem_real --rbt12 1000000        # mesmo relatório com a alíquota efetiva do Simples (8,45%)
+python -m margem_real.pipeline --skus 100    # demonstração da carga com controles
+python -m margem_real.agent.evals --trials 5 # reavalia o agente e regrava evals/
+make check                                   # ruff + mypy + pytest (cobertura >= 95%) + auditoria
 ```
+
+## Avaliação do agente (gerada de `evals/resultados.json`)
+
+<!-- eval:begin -->
+| Planejador | Conjunto | Tarefas | pass@1 | pass^1 | pass^5 |
+|---|---|---|---|---|---|
+| regras | dev | 31 | 100,0% | 100,0% | 100,0% |
+| regras | heldout | 11 | 36,4% | 36,4% | 36,4% |
+| ruidoso(p=0.25) | dev | 31 | 68,4% | 68,4% | 6,5% |
+| ruidoso(p=0.25) | heldout | 11 | 25,5% | 25,5% | 0,0% |
+<!-- eval:end -->
+
+Como ler, sem exagero:
+
+- O planejador `regras` **não é um modelo de linguagem**: é um stand-in determinístico (regex). Nenhum número acima mede um LLM.
+- `dev` = tarefas usadas enquanto o planejador era escrito; 100% ali é esperado e **não prova generalização**. O conjunto **held-out** (36,4%) é o número honesto: ele expôs 6 falhas de roteamento e 1 resposta silenciosamente errada (o custo fixo era ignorado), que estão registradas, não escondidas.
+- `ruidoso` injeta falhas com taxa conhecida só para provar que o harness as detecta (pass^5 cai a 6,5% no dev).
+- Para avaliar um modelo real basta implementar o `Planejador` (Protocol) e rodar o mesmo harness. **Isso não foi feito.**
 
 ## Estrutura
 
 ```
 src/margem_real/
   pricing.py      # preço mínimo, sugerido, margem (Decimal, validação de entradas)
-  channels.py     # parâmetros ILUSTRATIVOS de canal
+  tributos.py     # alíquota efetiva do Simples, Anexo I (Fractions, tabela da LC 123/2006)
+  channels.py     # parâmetros ILUSTRATIVOS de canal; com_simples() uniformiza o imposto
   synthetic.py    # gerador de dados reprodutível (semente)
-  sql/margem_contribuicao.sql   # modelo analítico em DuckDB
   analysis.py     # SQL + resumo por canal + simulação de repricing
-  cli.py          # gera relatório em Markdown e CSV
-tests/            # 26 testes: contas manuais, invariantes, SQL × Python
+  cli.py          # relatório em Markdown e CSV
+  pipeline/       # contratos, armazém DuckDB, controles, logs JSON
+  agent/          # ferramentas, planejadores, evals (tarefas, graders, métricas)
+tests/            # 118 testes: contas manuais, propriedades (Hypothesis), pipeline, agente
+docs/ evals/ scripts/ DATASHEET.md SECURITY.md CHANGELOG.md AUDITORIA.md
 ```
 
 ## O que este projeto demonstra (e o que não)
 
 | Área | Demonstrado aqui | Não demonstrado aqui |
 |---|---|---|
-| Controladoria e precificação | Margem de contribuição, preço mínimo e sugerido, markup × margem por canal, premissas e limites explícitos | Matriz de controles internos, conciliações, calendário fiscal, regime tributário detalhado |
-| Engenharia de dados | Modelo analítico em SQL (DuckDB), geração reprodutível de dados, pacote Python, testes, lint e CI | Orquestração, cargas incrementais, qualidade de dados em escala, nuvem, dbt |
-| Agentes de IA | Nada | Todo o tema |
+| Controladoria e precificação | Margem de contribuição, preço mínimo e sugerido, Simples Anexo I, matriz de controles (inspirada no COSO 2013), premissas e limites | ST, DIFAL, fator R, transição CBS/IBS, calendário fiscal, revisão por contador |
+| Engenharia de dados | Contratos, quarentena, idempotência, upsert transacional, linhagem, conciliação, SLA de frescor, lock file, CI em matriz | Orquestrador (Airflow/Dagster), carga incremental em volume, nuvem, dbt, banco compartilhado |
+| Agentes de IA | Camada de ferramentas somente leitura com erros acionáveis; harness com pass@k/pass^k, held-out, graders por estado final | Um LLM real no loop, avaliação humana, red-teaming, custo/latência |
 
 ## Decisões de projeto
 
@@ -76,7 +110,7 @@ tests/            # 26 testes: contas manuais, invariantes, SQL × Python
 
 Custos fixos da operação (folha, aluguel) ficam fora da margem de contribuição. Os parâmetros por canal são iguais para todos os SKUs do canal. Não há ST, DIFAL nem regime tributário detalhado: o imposto entra como alíquota única por canal. No Simples Nacional real a alíquota efetiva é a mesma em todos os canais; aqui ela varia por canal só para fins didáticos (ver `VERIFICACAO.md`).
 
-Veja [`VERIFICACAO.md`](VERIFICACAO.md) para o que foi e o que não foi verificado.
+No Simples, a alíquota efetiva **cai** ao cruzar R$ 3,6 mi (11,875% → ~8,5%) porque a coluna de ICMS da 6ª faixa é "-"; a leitura de que o ICMS passa a ser recolhido fora do DAS é **hipótese** a confirmar com contador. Veja [`VERIFICACAO.md`](VERIFICACAO.md) para o que foi e o que não foi verificado, e [`CHANGELOG.md`](CHANGELOG.md) para o histórico.
 
 ## Licença
 

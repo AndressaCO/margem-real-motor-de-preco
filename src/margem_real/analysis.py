@@ -11,7 +11,7 @@ from .pricing import preco_sugerido
 
 
 def _sql(nome: str) -> str:
-    return resources.files("margem_real").joinpath("sql", nome).read_text(encoding="utf-8")
+    return (resources.files("margem_real") / "sql" / nome).read_text(encoding="utf-8")
 
 
 def margem_por_sku_canal(
@@ -55,8 +55,10 @@ def repricing(margem: pd.DataFrame, canais: pd.DataFrame, margem_alvo: float) ->
     """
     base = margem.merge(canais[["canal", "pct_despesas", "custo_fixo"]], on="canal")
     base["preco_sugerido"] = [
-        preco_sugerido(r.custo, r.pct_despesas, margem_alvo, r.custo_fixo)
-        for r in base.itertuples(index=False)
+        preco_sugerido(
+            float(r["custo"]), float(r["pct_despesas"]), margem_alvo, float(r["custo_fixo"])
+        )
+        for r in base.to_dict("records")
     ]
     base["variacao_pct"] = base["preco_sugerido"] / base["preco_medio_praticado"] - 1
     return base.drop(columns=["pct_despesas", "custo_fixo"])

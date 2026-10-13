@@ -44,17 +44,17 @@ def gerar_vendas(
     rng = np.random.default_rng(semente + 1)
     peso_canal = {c.nome: p for c, p in zip(canais, (1.0, 0.8, 0.5, 0.6), strict=True)}
     linhas = []
-    for sku in skus.itertuples(index=False):
+    for sku in skus.to_dict("records"):
         for canal in canais:
             if rng.random() > 0.85:  # nem todo SKU está listado em todo canal
                 continue
             for mes in MESES:
-                lam = 6.0 * sku.popularidade * peso_canal[canal.nome]
+                lam = 6.0 * float(sku["popularidade"]) * peso_canal[canal.nome]
                 unidades = int(rng.poisson(lam))
                 if unidades == 0:
                     continue
                 promo = rng.random() < 0.20
                 desconto = rng.uniform(0.03, 0.10) if promo else 0.0
-                preco = round(sku.custo * markup * (1 - desconto), 2)
-                linhas.append((sku.sku, canal.nome, mes, unidades, preco))
+                preco = round(float(sku["custo"]) * markup * (1 - desconto), 2)
+                linhas.append((sku["sku"], canal.nome, mes, unidades, preco))
     return pd.DataFrame(linhas, columns=["sku", "canal", "mes", "unidades", "preco"])

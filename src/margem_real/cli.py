@@ -8,7 +8,7 @@ from pathlib import Path
 import pandas as pd
 
 from .analysis import abaixo_do_minimo, margem_por_sku_canal, repricing, resumo_por_canal
-from .channels import canais_dataframe
+from .channels import CANAIS_ILUSTRATIVOS, canais_dataframe, com_simples
 from .pricing import brl
 from .synthetic import gerar_skus, gerar_vendas
 
@@ -30,10 +30,10 @@ def _tabela_md(df: pd.DataFrame) -> str:
 
 
 def construir_relatorio(
-    n_skus: int, markup: float, margem_alvo: float, semente: int
+    n_skus: int, markup: float, margem_alvo: float, semente: int, rbt12: float | None = None
 ) -> tuple[str, pd.DataFrame]:
     skus = gerar_skus(n_skus, semente)
-    canais = canais_dataframe()
+    canais = canais_dataframe(com_simples(rbt12) if rbt12 else CANAIS_ILUSTRATIVOS)
     vendas = gerar_vendas(skus, markup=markup, semente=semente)
     margem = margem_por_sku_canal(vendas, skus, canais)
     resumo = resumo_por_canal(margem)
@@ -71,12 +71,17 @@ def construir_relatorio(
         )
     )
 
+    regime = (
+        f"\nImposto: alíquota efetiva única do Simples Anexo I para RBT12 de {brl(rbt12)}."
+        if rbt12
+        else ""
+    )
     texto = f"""# Relatório de margem por SKU e canal
 
 {AVISO}
 
 Parâmetros: {n_skus} SKUs, markup fixo de {str(markup).replace(".", ",")} em todos os canais,
-margem alvo de {_pct(margem_alvo)}, semente {semente}.
+margem alvo de {_pct(margem_alvo)}, semente {semente}.{regime}
 
 ## Visão geral
 
@@ -108,11 +113,19 @@ def main(argv: list[str] | None = None) -> None:
     p.add_argument("--markup", type=float, default=1.80)
     p.add_argument("--margem-alvo", type=float, default=0.10)
     p.add_argument("--semente", type=int, default=42)
+    p.add_argument(
+        "--rbt12",
+        type=float,
+        default=None,
+        help="receita 12 meses (R$): alíquota única do Simples Anexo I em todos os canais",
+    )
     p.add_argument("--saida", type=Path, default=Path("reports/relatorio.md"))
     p.add_argument("--csv", type=Path, default=Path("reports/margem_por_sku_canal.csv"))
     args = p.parse_args(argv)
 
-    texto, margem = construir_relatorio(args.skus, args.markup, args.margem_alvo, args.semente)
+    texto, margem = construir_relatorio(
+        args.skus, args.markup, args.margem_alvo, args.semente, args.rbt12
+    )
     args.saida.parent.mkdir(parents=True, exist_ok=True)
     args.saida.write_text(texto, encoding="utf-8")
     margem.to_csv(args.csv, index=False)

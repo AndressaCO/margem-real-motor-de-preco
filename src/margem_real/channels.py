@@ -7,7 +7,7 @@ Valide alíquotas e regime com seu contador.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 import pandas as pd
 
@@ -33,6 +33,15 @@ CANAIS_ILUSTRATIVOS: tuple[Canal, ...] = (
     Canal("site_proprio", 0.08, 0.035, 0.06, 0.02, 0.10),
     Canal("b2b_distribuicao", 0.10, 0.00, 0.02, 0.01, 0.02),
 )
+
+
+def com_simples(rbt12: float, canais: tuple[Canal, ...] = CANAIS_ILUSTRATIVOS) -> tuple[Canal, ...]:
+    """Mesma alíquota efetiva do Simples (Anexo I) em todos os canais, como manda a regra:
+    o Simples cobra uma alíquota única da empresa, não uma por canal."""
+    from .tributos import aliquota_efetiva_simples_anexo1
+
+    aliq = round(aliquota_efetiva_simples_anexo1(rbt12), 6)
+    return tuple(replace(c, imposto=aliq) for c in canais)
 
 
 def canais_dataframe(canais: tuple[Canal, ...] = CANAIS_ILUSTRATIVOS) -> pd.DataFrame:
