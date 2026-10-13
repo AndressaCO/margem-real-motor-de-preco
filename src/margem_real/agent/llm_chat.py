@@ -125,6 +125,9 @@ class PlanejadorChat:
         self.max_tokens = max_tokens
         self.temperatura = temperatura
         self.uso = uso if uso is not None else Uso()
+        # Gemini 3 exige devolver a "thought_signature" (extra_content) de cada chamada
+        # de ferramenta nas voltas seguintes; guardamos uma por passo (índice do histórico).
+        self._extras: list[dict[str, Any] | None] = []
 
     def _mensagens(self, pergunta: str, historico: list[dict]) -> list[dict[str, Any]]:
         msgs: list[dict[str, Any]] = [
@@ -133,20 +136,21 @@ class PlanejadorChat:
         ]
         for i, h in enumerate(historico):
             tid = f"call_{i:02d}"
+            chamada: dict[str, Any] = {
+                "id": tid,
+                "type": "function",
+                "function": {
+                    "name": h["ferramenta"],
+                    "arguments": json.dumps(h["args"], ensure_ascii=False),
+                },
+            }
+            if i < len(self._extras) and self._extras[i]:
+                chamada["extra_content"] = self._extras[i]
             msgs.append(
                 {
                     "role": "assistant",
                     "content": None,
-                    "tool_calls": [
-                        {
-                            "id": tid,
-                            "type": "function",
-                            "function": {
-                                "name": h["ferramenta"],
-                                "arguments": json.dumps(h["args"], ensure_ascii=False),
-                            },
-                        }
-                    ],
+                    "tool_calls": [chamada],
                 }
             )
             msgs.append(
@@ -175,7 +179,11 @@ class PlanejadorChat:
         u = r.get("usage") or {}
         self.uso.tokens_entrada += int(u.get("prompt_tokens", 0))
         self.uso.tokens_saida += int(u.get("completion_tokens", 0))
-        return _para_passo_chat(r)
+        passo = _para_passo_chat(r)
+        if passo.ferramenta:
+            chamadas = ((r.get("choices") or [{}])[0].get("message") or {}).get("tool_calls") or []
+            self._extras.append(chamadas[0].get("extra_content") if chamadas else None)
+        return passo
 
 
 def _para_passo_chat(resp: dict[str, Any]) -> Passo:

@@ -378,3 +378,25 @@ def test_cliente_chat_erro_http_inclui_corpo_sem_segredo(monkeypatch):
     with pytest.raises(RuntimeError) as e:
         C.cliente_chat_http("https://x", "tok-secreto")({})
     assert "campo invalido" in str(e.value) and "tok-secreto" not in str(e.value)
+
+
+def test_chat_devolve_thought_signature_nas_voltas_seguintes():
+    vistos = []
+
+    def cliente(corpo):
+        vistos.append(corpo)
+        r = _resp_chat("margem_conciliar")
+        r["choices"][0]["message"]["tool_calls"][0]["extra_content"] = {
+            "google": {"thought_signature": f"sig{len(vistos)}"}
+        }
+        return r
+
+    p = PlanejadorChat("m", cliente, tool_choice="auto")
+    h = []
+    for _ in range(2):
+        passo = p.proximo("q", h)
+        h.append({"ferramenta": passo.ferramenta, "args": passo.args, "resultado": {"ok": 1}})
+    p.proximo("q", h)
+    chamadas = [m["tool_calls"][0] for m in vistos[2]["messages"] if m.get("tool_calls")]
+    assert [c["extra_content"]["google"]["thought_signature"] for c in chamadas] == ["sig1", "sig2"]
+    assert not any(m.get("tool_calls") for m in vistos[0]["messages"])
