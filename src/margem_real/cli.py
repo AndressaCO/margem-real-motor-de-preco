@@ -52,7 +52,7 @@ def construir_relatorio(
     )[["canal", "pares", "receita", "margem_contribuicao", "margem_pct", "pct_pares_no_prejuizo"]]
 
     piores = (
-        novo.sort_values("margem_contribuicao")
+        novo.sort_values(["margem_contribuicao", "sku", "canal"])
         .head(8)[
             [
                 "sku",

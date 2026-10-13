@@ -73,7 +73,7 @@ O `marketplace_a` (16% de comissão + R$ 6 fixos) e o `marketplace_b` (12%) fica
 | PRÁTICA DE MERCADO | Recrutadores valorizam poucos projetos com pergunta de negócio, README claro, testes e impacto | Data Engineer Academy (2026); Placement Preparation (2026) |
 | PRÁTICA DE MERCADO | Vagas de BI pedem Power BI, DAX, Power Query, SQL; Python como diferencial; vaga remota sênior pede SQL, Python, Snowflake/Databricks | Vagas.com.br, Empregando Brasil (03/06/2026), Virtual Vocations (06/07/2026) |
 | PRÁTICA DE MERCADO | Tarifas Shopee e Mercado Livre da seção 2 | ecommercenapratica.com, 28 e 29/07/2026 |
-| FATO (empírico, local) | 118 testes passam; cobertura 99%; ruff e mypy limpos; relatório regenerado é idêntico ao versionado | `scripts/auditar.py`, 13/10/2026 |
+| FATO (empírico, local) | 119 testes passam; cobertura 99%; ruff e mypy limpos; relatório regenerado é idêntico ao versionado | `scripts/auditar.py`, 13/10/2026 |
 | FATO (matemático) | pass@k = 1 − C(n−c,k)/C(n,k); pass^k = C(c,k)/C(n,k) | Chen et al., arXiv:2107.03374; τ-bench, arXiv:2406.12045 |
 | FATO | COSO 2013: 5 componentes e 17 princípios | Resumo secundário (onspring.com). `docs/CONTROLES.md` é *inspirada* no COSO, não o implementa |
 | FATO (local) | `pip-audit` sem vulnerabilidades conhecidas no lock file | Execução em 13/10/2026 |

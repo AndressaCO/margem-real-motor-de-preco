@@ -11,7 +11,7 @@ Formato inspirado em Keep a Changelog. Datas no formato dd/mm/aaaa.
 - `margem_real.agent`: 6 ferramentas somente leitura, planejador plugável, harness de avaliação (pass@k, pass^k, held-out, graders por estado final).
 - Documentação: arquitetura, 3 ADRs, matriz de controles, datasheet, segurança, avaliação e benchmark.
 - Infra: lock file, matriz de CI 3.11–3.13, Dependabot, gate de cobertura ≥ 95%, mypy, `scripts/auditar.py`, `scripts/atualizar_readme.py`.
-- Testes de propriedade (Hypothesis). Total: 118 testes, 99% de cobertura.
+- Testes de propriedade (Hypothesis). Total: 119 testes, 99% de cobertura.
 
 ### Alterado
 - `requires-python >=3.11` e `pandas>=2.3` (piso real testado; 2.0.3 não instala).
@@ -22,6 +22,7 @@ Formato inspirado em Keep a Changelog. Datas no formato dd/mm/aaaa.
 - `pass@1` retornava `0.19999999999999996` (ponto flutuante).
 - Relatório de avaliação quebrava com `--trials` diferente de 5.
 - Logger duplicava handlers ao reconfigurar.
+- Ordem do relatório não era determinística: `ORDER BY margem_contribuicao` empatava (valor arredondado a 2 casas) e a ordem dos empates variava com o número de threads do DuckDB. Achado pelo job de reprodutibilidade do CI (runner diferente da máquina local). Agora `ORDER BY margem_contribuicao, sku, canal`; 3 linhas do CSV de referência mudaram de posição (valores iguais) e há teste de regressão com 1, 2 e 8 threads.
 
 ### Conhecido
 - Held-out do planejador de regras: 36,4%, incluindo uma resposta silenciosamente errada (h2). Mantido de propósito; ver `docs/AVALIACAO.md`.

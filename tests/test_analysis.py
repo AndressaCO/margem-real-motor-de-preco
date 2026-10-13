@@ -81,3 +81,36 @@ def test_relatorio_roda_e_declara_dados_sinteticos():
     texto, _ = construir_relatorio(40, 1.8, 0.10, 3)
     assert "sintéticos" in texto
     assert "R$" in texto
+
+
+def test_ordem_e_deterministica_com_empates_e_qualquer_numero_de_threads():
+    """Regressão do CI: ORDER BY só por margem (arredondada a 2 casas) empatava, e a ordem
+    dos empates mudava com o número de threads do DuckDB (runner com mais núcleos)."""
+    import duckdb
+
+    from margem_real.analysis import _sql
+    from margem_real.channels import CANAIS_ILUSTRATIVOS, canais_dataframe
+    from margem_real.synthetic import gerar_skus, gerar_vendas
+
+    skus = gerar_skus(200, 42)
+    canais = canais_dataframe(CANAIS_ILUSTRATIVOS)
+    vendas = gerar_vendas(skus, markup=1.8, semente=42)
+    esperado = margem_por_sku_canal(vendas, skus, canais)
+
+    chave = esperado[["margem_contribuicao", "sku", "canal"]]
+    assert chave.equals(
+        chave.sort_values(["margem_contribuicao", "sku", "canal"], ignore_index=True)
+    )
+    assert esperado["margem_contribuicao"].duplicated().any(), "o caso precisa conter empates"
+
+    for n in (1, 2, 8):
+        con = duckdb.connect(":memory:")
+        try:
+            con.execute(f"PRAGMA threads={n}")
+            con.register("vendas", vendas)
+            con.register("skus", skus)
+            con.register("canais", canais)
+            obtido = con.execute(_sql("margem_contribuicao.sql")).df()
+        finally:
+            con.close()
+        assert obtido[["sku", "canal"]].equals(esperado[["sku", "canal"]]), f"threads={n}"

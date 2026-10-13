@@ -4,7 +4,7 @@
 
 > **Dados 100% sintéticos.** Alíquotas, comissões e fretes são ilustrativos e não representam nenhuma empresa nem tabela de marketplace. Troque pelos seus números e valide com seu contador.
 
-**English summary:** a small, fully reproducible stack in three layers. (1) **Controllership**: contribution margin, break-even price and Simples Nacional effective rate per SKU × channel. (2) **Data engineering**: a contract-checked, idempotent load pipeline (DuckDB) with quarantine, lineage, reconciliation and freshness controls. (3) **AI-agent evaluation**: a read-only tool layer plus an eval harness (pass@k / pass^k, held-out split, state-based graders). The agent's planner is a rule-based **stand-in, not a language model**; the evals are there to show how one would be tested. Synthetic data, 118 tests, 99% coverage, CI on Python 3.11–3.13.
+**English summary:** a small, fully reproducible stack in three layers. (1) **Controllership**: contribution margin, break-even price and Simples Nacional effective rate per SKU × channel. (2) **Data engineering**: a contract-checked, idempotent load pipeline (DuckDB) with quarantine, lineage, reconciliation and freshness controls. (3) **AI-agent evaluation**: a read-only tool layer plus an eval harness (pass@k / pass^k, held-out split, state-based graders). The agent's planner is a rule-based **stand-in, not a language model**; the evals are there to show how one would be tested. Synthetic data, 119 tests, 99% coverage, CI on Python 3.11–3.13.
 
 ## Três camadas, um problema
 
@@ -87,7 +87,7 @@ src/margem_real/
   cli.py          # relatório em Markdown e CSV
   pipeline/       # contratos, armazém DuckDB, controles, logs JSON
   agent/          # ferramentas, planejadores, evals (tarefas, graders, métricas)
-tests/            # 118 testes: contas manuais, propriedades (Hypothesis), pipeline, agente
+tests/            # 119 testes: contas manuais, propriedades (Hypothesis), pipeline, agente
 docs/ evals/ scripts/ DATASHEET.md SECURITY.md CHANGELOG.md AUDITORIA.md
 ```
 

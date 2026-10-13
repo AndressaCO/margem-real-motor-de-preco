@@ -39,7 +39,7 @@ def resumo_por_canal(margem: pd.DataFrame) -> pd.DataFrame:
     )
     out["margem_pct"] = out["margem_contribuicao"] / out["receita"]
     out["pct_pares_no_prejuizo"] = out["pares_no_prejuizo"] / out["pares"]
-    return out.reset_index().sort_values("margem_pct")
+    return out.reset_index().sort_values(["margem_pct", "canal"])
 
 
 def abaixo_do_minimo(margem: pd.DataFrame) -> pd.DataFrame:

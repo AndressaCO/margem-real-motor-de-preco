@@ -36,4 +36,4 @@ SELECT
     CEIL((custo + custo_fixo) / (1 - pct_despesas) * 100) / 100      AS preco_minimo,
     ROUND(receita / unidades, 2)                                     AS preco_medio_praticado
 FROM agregado
-ORDER BY margem_contribuicao;
+ORDER BY margem_contribuicao, sku, canal;

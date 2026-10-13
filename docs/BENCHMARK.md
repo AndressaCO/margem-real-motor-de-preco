@@ -44,9 +44,17 @@ Os critérios C01–C20 estão em `scripts/auditar.py` e agrupados em Qualidade,
 | 9 | Piso de versões não era real: `pandas 2.0.3` não instalou, o teste de "piso" rodou em 2.3.3 | `requires-python >=3.11`, `pandas>=2.3`; só reivindico o que testei |
 | 10 | Tipagem solta (8 erros do mypy após subir o alvo para 3.11) | Itertuples → `to_dict("records")` com `float()` explícito; mypy limpo em 25 arquivos |
 
-### Rodada 3 — verificação final
+### Rodada 3 — o CI independente achou um defeito que a máquina local não mostrava
 
-Executada ao fechar esta versão; ver [`AUDITORIA.md`](../AUDITORIA.md). Se algum critério falhar ali, a versão não é publicada como "concluída".
+| # | Lacuna encontrada | Correção |
+|---|---|---|
+| 11 | Mesmo com as versões fixadas (pandas 3.0.6, numpy 2.5.4, duckdb 1.5.6), o relatório do CI divergiu do versionado: só a **ordem** de linhas empatadas no `ORDER BY` mudou, porque o DuckDB paraleliza e o runner tem outro número de núcleos | `ORDER BY margem_contribuicao, sku, canal` (também no pandas); teste de regressão com 1, 2 e 8 threads (falha no SQL antigo, passa no novo); job de reprodutibilidade passa a usar o lock file e anotar a divergência |
+
+Lição registrada: "reproduz na minha máquina" não era evidência suficiente; só o runner limpo expôs o defeito.
+
+### Verificação final
+
+Executada ao fechar esta versão; ver [`AUDITORIA.md`](../AUDITORIA.md) e o status do CI no GitHub. Se algum critério falhar ali, a versão não é publicada como "concluída".
 
 ## 4. Lacunas conhecidas (não corrigidas, de propósito)
 
