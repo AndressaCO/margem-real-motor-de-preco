@@ -81,7 +81,7 @@ O `marketplace_a` (16% de comissão + R$ 6 fixos) e o `marketplace_b` (12%) fica
 - **Amostra de vagas.** São 12 vagas em 3 páginas, com trechos truncados, sem recorte estatístico.
 - **Regime tributário real.** O projeto não trata ST, DIFAL, fator R, nem a transição CBS/IBS da LC 214/2025.
 - **CI no GitHub.** O workflow existe, mas só roda após o primeiro push. Windows e macOS não foram testados.
-- **Links do README do perfil** (`SEU-USUARIO` etc.) são marcadores até a publicação.
+- **Links do README do perfil.** Usuário do GitHub (`AndressaCO`) confirmado pela API; LinkedIn e site vieram da sua informação e não foram abertos. O link do repositório só funciona depois da publicação.
 
 ## 6. Sobre "top 0,01%"
 
