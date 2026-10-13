@@ -35,7 +35,9 @@ Leitura:
 - **held-out 36,4%** (4 de 11): o número que importa. Falhas: `h1, h3, h4, h5, h9, h11` por roteamento (o planejador devolve esclarecimento ou recusa em vez do resultado) e `h2` com **resposta silenciosamente errada** (87,5 em vez de 96,88, ignorando o custo fixo). Este último é o tipo de falha que um grader só de formato não pegaria.
 - **ruidoso**: injeta erro em 25% das chamadas. `pass^5` cai a 6,5% no dev, o que confirma que o harness enxerga falhas intermitentes que `pass@k` mascararia.
 
-## Avaliar um LLM real (implementado; ainda NÃO executado)
+## Avaliar um LLM real (implementado; 1 execução feita, com ressalvas)
+
+Resultado da única execução (Gemini, held-out, 11/11, 1 trial): `docs/RESULTADO-LLM-GEMINI.md`. Leia as ressalvas antes de citá-lo.
 
 `PlanejadorClaude` (`src/margem_real/agent/llm.py`) é um `Planejador` que chama a API Messages da Anthropic. O modelo recebe as 6 ferramentas `margem_*` e uma 7ª, `responder(status, texto, dados)`, que encerra o atendimento; os avaliadores por estado final são os mesmos do stand-in. A chave vem de `ANTHROPIC_API_KEY`.
 
@@ -55,6 +57,6 @@ Leitura:
 
 **O que foi verificado:** encanamento ponta a ponta com um cliente falso que reproduz o `PlanejadorRegras` pela interface da API (dev pass^2 = 100%, nenhum estado alterado), leitura de resposta, repetição em 429, e que a chave não vaza em erros (11 testes em `tests/test_llm.py`).
 
-**O que NÃO foi verificado:** qualquer execução contra um modelo real (não havia chave neste ambiente), o formato exato de resposta da API em produção além do documentado, custo e latência reais, e a qualidade do prompt de sistema. Depois de rodar: revise à mão uma amostra das transcrições (avaliadores automáticos também erram) e registre o resultado em `VERIFICACAO.md`.
+**O que NÃO foi verificado:** execução com o Claude (Anthropic) ou com mais de um modelo, repetição entre dias, revisão manual das transcrições, o formato exato de resposta da API em produção além do documentado, custo e latência reais, e a qualidade do prompt de sistema. Depois de rodar: revise à mão uma amostra das transcrições (avaliadores automáticos também erram) e registre o resultado em `VERIFICACAO.md`.
 
 Limites de interpretação: uma execução única de um modelo é uma medida pontual; ela varia com a versão do modelo, a temperatura e a carga da API.

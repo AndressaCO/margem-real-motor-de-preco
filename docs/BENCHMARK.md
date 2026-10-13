@@ -60,7 +60,7 @@ Executada ao fechar esta versão; ver [`AUDITORIA.md`](../AUDITORIA.md) e o stat
 
 | Lacuna | Por que não foi fechada |
 |---|---|
-| Nenhum LLM real avaliado | Planejador (`PlanejadorClaude`) e workflow `avaliar-llm` implementados e testados com cliente falso; falta executar com a chave (custo) |
+| Um único LLM real avaliado, 1 execução | Gemini no held-out: 11/11 (IC 95% ≈ 71,5–100%); prompt e tarefas do mesmo autor; sem revisão manual das transcrições (`docs/RESULTADO-LLM-GEMINI.md`) |
 | Held-out em 36,4% | É um resultado, não um defeito escondido; melhorar o planejador de regras seria ajustar ao held-out e invalidá-lo |
 | Python 3.10 e pandas < 2.3 não suportados | Não testei; declarar suporte seria afirmar sem evidência |
 | Windows/macOS | Não testados |

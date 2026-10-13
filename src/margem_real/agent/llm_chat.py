@@ -5,7 +5,7 @@ Mesmo contrato do ``PlanejadorClaude``: 6 ferramentas ``margem_*`` somente leitu
 (chave gratuita do Google AI Studio). O GitHub Models foi tentado primeiro e NÃO funciona mais:
 responde 200 "OK" em texto simples e a documentação o dá como encerrado em 30/07/2026.
 
-NADA aqui foi validado contra um modelo real até o registro em VERIFICACAO.md dizer o contrário;
+Executado uma vez contra o Gemini (ver docs/RESULTADO-LLM-GEMINI.md);
 os testes usam um cliente falso. Limites do plano gratuito: ver docs/AVALIACAO.md.
 """
 

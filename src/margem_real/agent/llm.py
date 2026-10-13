@@ -8,8 +8,8 @@ estruturados (é o que os avaliadores por estado final conferem).
 Segurança: as ferramentas são somente leitura; a chave vem de ``ANTHROPIC_API_KEY`` e nunca é
 gravada em transcrição, relatório ou log.
 
-NADA aqui foi executado contra a API real neste repositório (não havia chave): os testes usam
-um cliente falso. Rode ``avaliar-llm`` (workflow do GitHub) para obter números reais.
+O ``PlanejadorClaude`` (API da Anthropic) NÃO foi executado contra a API real (sem chave):
+os testes usam um cliente falso. Rode ``avaliar-llm`` (workflow do GitHub) para obter números reais.
 """
 
 from __future__ import annotations
