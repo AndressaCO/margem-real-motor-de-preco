@@ -58,7 +58,12 @@ def cliente_chat_http(
         for i in range(tentativas):
             try:
                 with urllib.request.urlopen(req, timeout=120) as r:
-                    return json.loads(r.read())
+                    bruto = r.read()
+                try:
+                    return json.loads(bruto)
+                except json.JSONDecodeError:
+                    trecho = bruto[:200].decode("utf-8", "replace")
+                    raise RuntimeError(f"resposta não é JSON: {trecho!r}") from None
             except urllib.error.HTTPError as e:
                 if e.code in (429, 500, 502, 503) and i < tentativas - 1:
                     time.sleep(espera * (2**i))

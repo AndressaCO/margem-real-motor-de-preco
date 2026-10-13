@@ -323,3 +323,13 @@ def test_cli_provedor_github_exige_token(monkeypatch, tmp_path):
         cli.main(
             ["--llm-modelo", "m", "--provedor", "github", "--trials", "1", "--saida", str(tmp_path)]
         )
+
+
+def test_cliente_chat_resposta_nao_json(monkeypatch):
+    class _Texto(_Resp):
+        def read(self):
+            return b"<html>erro</html>"
+
+    monkeypatch.setattr(C.urllib.request, "urlopen", lambda req, timeout: _Texto({}))
+    with pytest.raises(RuntimeError, match="não é JSON"):
+        C.cliente_chat_http("https://x", "tok")({})
