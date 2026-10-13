@@ -73,7 +73,7 @@ O `marketplace_a` (16% de comissão + R$ 6 fixos) e o `marketplace_b` (12%) fica
 | PRÁTICA DE MERCADO | Recrutadores valorizam poucos projetos com pergunta de negócio, README claro, testes e impacto | Data Engineer Academy (2026); Placement Preparation (2026) |
 | PRÁTICA DE MERCADO | Vagas de BI pedem Power BI, DAX, Power Query, SQL; Python como diferencial; vaga remota sênior pede SQL, Python, Snowflake/Databricks | Vagas.com.br, Empregando Brasil (03/06/2026), Virtual Vocations (06/07/2026) |
 | PRÁTICA DE MERCADO | Tarifas Shopee e Mercado Livre da seção 2 | ecommercenapratica.com, 28 e 29/07/2026 |
-| FATO (empírico, local) | 143 testes passam (119 + 24 dos planejadores LLM, com cliente falso); cobertura 99%; ruff e mypy limpos; relatório regenerado é idêntico ao versionado | `scripts/auditar.py`, 13/10/2026 |
+| FATO (empírico, local) | 144 testes passam (119 + 24 dos planejadores LLM, com cliente falso); cobertura 99%; ruff e mypy limpos; relatório regenerado é idêntico ao versionado | `scripts/auditar.py`, 13/10/2026 |
 | FATO (empírico, nuvem) | `PlanejadorChat` + Gemini `gemini-3.5-flash-lite`, held-out: 11/11, 1 trial, 0 estados alterados, 21 chamadas; IC 95% de Clopper-Pearson ≈ 71,5–100% (0,025^(1/11) = 0,7151) | Execução 38468776708 do workflow `avaliar-llm`, 13/10/2026; `docs/RESULTADO-LLM-GEMINI.md` |
 | NÃO VERIFICADO | Revisão manual das transcrições do Gemini; contaminação entre prompt e tarefas; qualquer execução com o Claude; estabilidade entre dias | Pendente |
 | FATO (matemático) | pass@k = 1 − C(n−c,k)/C(n,k); pass^k = C(c,k)/C(n,k) | Chen et al., arXiv:2107.03374; τ-bench, arXiv:2406.12045 |

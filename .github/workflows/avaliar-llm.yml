@@ -93,6 +93,12 @@ jobs:
             msg=$(cat "$f" | sed ':a;N;$!ba;s/%/%25/g;s/\r/%0D/g;s/\n/%0A/g')
             echo "::notice title=Relatório da avaliação::$msg"
           done
+      - name: Amostra de transcrições como anotações (para revisão manual)
+        if: always()
+        run: |
+          for f in evals/llm/*/transcripts.jsonl; do
+            [ -f "$f" ] && python scripts/anotar_transcricoes.py "$f" 10
+          done; true
       - uses: actions/upload-artifact@v6
         if: always()
         with:

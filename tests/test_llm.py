@@ -400,3 +400,16 @@ def test_chat_devolve_thought_signature_nas_voltas_seguintes():
     chamadas = [m["tool_calls"][0] for m in vistos[2]["messages"] if m.get("tool_calls")]
     assert [c["extra_content"]["google"]["thought_signature"] for c in chamadas] == ["sig1", "sig2"]
     assert not any(m.get("tool_calls") for m in vistos[0]["messages"])
+
+
+def test_cliente_chat_respeita_intervalo_minimo(monkeypatch):
+    dormiu = []
+    agora = [100.0]
+    monkeypatch.setattr(C.time, "monotonic", lambda: agora[0])
+    monkeypatch.setattr(C.time, "sleep", lambda s: dormiu.append(s))
+    monkeypatch.setattr(C.urllib.request, "urlopen", lambda req, timeout: _Resp({"choices": []}))
+    c = C.cliente_chat_http("https://x", "tok", intervalo_min=5.0)
+    c({})
+    agora[0] += 2.0
+    c({})
+    assert len(dormiu) == 1 and abs(dormiu[0] - 3.0) < 1e-9

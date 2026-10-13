@@ -55,10 +55,18 @@ def cliente_chat_http(
     espera: float = 5.0,
     extra: dict | None = None,
     timeout: float = 90.0,
+    intervalo_min: float = 0.0,
 ) -> Cliente:
     """Cliente mínimo (urllib) com repetição em 429/5xx. O token nunca aparece em erros."""
 
+    ultimo = [0.0]
+
     def chamar(corpo: dict[str, Any]) -> dict[str, Any]:
+        # respeita o limite de requisições por minuto do plano gratuito
+        falta = intervalo_min - (time.monotonic() - ultimo[0])
+        if falta > 0:
+            time.sleep(falta)
+        ultimo[0] = time.monotonic()
         req = urllib.request.Request(
             url,
             data=json.dumps(corpo).encode("utf-8"),
@@ -104,7 +112,7 @@ def cliente_gemini(chave: str | None = None) -> Cliente:
     k = chave or os.environ.get("GEMINI_API_KEY")
     if not k:
         raise RuntimeError("GEMINI_API_KEY ausente (chave gratuita em aistudio.google.com).")
-    return cliente_chat_http(URL_GEMINI, k)
+    return cliente_chat_http(URL_GEMINI, k, tentativas=6, espera=10.0, intervalo_min=4.5)
 
 
 class PlanejadorChat:
