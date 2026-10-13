@@ -80,7 +80,7 @@ O `marketplace_a` (16% de comissão + R$ 6 fixos) e o `marketplace_b` (12%) fica
 - **Eficácia do portfólio.** Nenhuma fonte quantifica o efeito de um portfólio no GitHub sobre entrevistas; as fontes são qualitativas.
 - **Amostra de vagas.** São 12 vagas em 3 páginas, com trechos truncados, sem recorte estatístico.
 - **Regime tributário real.** O projeto não trata ST, DIFAL, fator R, nem a transição CBS/IBS da LC 214/2025.
-- **CI no GitHub.** O workflow existe, mas só roda após o primeiro push. Windows e macOS não foram testados.
+- **Windows e macOS.** Não foram testados. O CI do GitHub (Ubuntu, Python 3.12) passou no primeiro push, em 13/10/2026.
 - **Links do README do perfil.** Usuário do GitHub (`AndressaCO`) confirmado pela API; LinkedIn e site vieram da sua informação e não foram abertos. O link do repositório só funciona depois da publicação.
 
 ## 6. Sobre "top 0,01%"
