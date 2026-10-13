@@ -13,12 +13,12 @@ from pathlib import Path
 from typing import Any
 
 from ..llm import Cliente, PlanejadorClaude, Uso, cliente_http
-from ..llm_chat import PlanejadorChat, cliente_github
+from ..llm_chat import PlanejadorChat, cliente_gemini
 from .metrics import agregar
 from .runner import gravar_transcricoes, rodar
 from .tasks import TAREFAS, contexto
 
-PROVEDORES = ("anthropic", "github")
+PROVEDORES = ("anthropic", "gemini")
 SPLITS = {"dev": ("dev",), "heldout": ("heldout",), "todos": ("dev", "heldout")}
 
 
@@ -42,13 +42,15 @@ def rodar_llm(
     ctx = contexto()
     if provedor not in PROVEDORES:
         raise ValueError(f"provedor desconhecido: {provedor}")
-    fabrica_cliente = cliente_github if provedor == "github" else cliente_http
-    classe = PlanejadorChat if provedor == "github" else PlanejadorClaude
+    fabrica_cliente = cliente_gemini if provedor == "gemini" else cliente_http
+    classe = PlanejadorChat if provedor == "gemini" else PlanejadorClaude
     cli = cliente or fabrica_cliente()
+    # a documentação do Gemini só mostra tool_choice "auto"; o prompt manda chamar `responder`
+    extra: dict[str, Any] = {"tool_choice": "auto"} if provedor == "gemini" else {}
     uso = Uso()
     tarefas = tuple(t for t in TAREFAS if t.split in SPLITS[split])
     res = rodar(
-        lambda i: classe(modelo, cli, temperatura=temperatura, uso=uso),
+        lambda i: classe(modelo, cli, temperatura=temperatura, uso=uso, **extra),
         ctx,
         trials,
         tarefas,

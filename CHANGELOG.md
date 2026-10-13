@@ -7,9 +7,9 @@ Formato inspirado em Keep a Changelog. Datas no formato dd/mm/aaaa.
 ### Adicionado
 - `margem_real.agent.llm`: `PlanejadorClaude` (API Messages da Anthropic, sem dependência nova), ferramenta `responder` para encerrar com status e dados, contagem de tokens e tempo.
 - `python -m margem_real.agent.evals --llm-modelo <id> [--trials N] [--split dev|heldout|todos]`: roda o harness com um LLM real e grava em `evals/llm/<modelo>/`.
-- `PlanejadorChat` e `--provedor github`: avaliação gratuita via GitHub Models com o `GITHUB_TOKEN` do Actions (`models: read`), sem secret.
+- `PlanejadorChat` e `--provedor gemini`: avaliação no plano gratuito do Gemini (secret `GEMINI_API_KEY`). O GitHub Models foi tentado e não responde mais.
 - Workflow `avaliar-llm` (somente `workflow_dispatch`, secret `ANTHROPIC_API_KEY`).
-- 19 testes com cliente falso (total: 138 testes, 99% de cobertura).
+- 19 testes com cliente falso (total: 140 testes, 99% de cobertura).
 
 ### Conhecido
 - Nenhuma execução contra um modelo real foi feita (sem chave no ambiente de desenvolvimento).

@@ -61,9 +61,9 @@ def main(argv: list[str] | None = None) -> None:
     )
     p.add_argument(
         "--provedor",
-        choices=["anthropic", "github"],
+        choices=["anthropic", "gemini"],
         default="anthropic",
-        help="anthropic: ANTHROPIC_API_KEY (pago). github: GITHUB_TOKEN, models:read (gratuito).",
+        help="anthropic: ANTHROPIC_API_KEY (pago). gemini: GEMINI_API_KEY (plano gratuito).",
     )
     p.add_argument("--split", choices=["dev", "heldout", "todos"], default="todos")
     p.add_argument("--temperatura", type=float, default=None)

@@ -187,7 +187,7 @@ def test_cli_llm_modelo_roda_e_imprime_uso(monkeypatch, tmp_path, capsys):
     assert not (tmp_path / "resultados.json").exists()  # o resultado determinístico não é tocado
 
 
-# ---- formato "chat completions" (GitHub Models etc.) ----
+# ---- formato "chat completions" (Gemini etc.) ----
 
 
 def _resp_chat(nome=None, uso=(10, 5), **args):
@@ -248,10 +248,10 @@ def test_chat_para_passo_casos_de_borda():
     assert r.dados == {"a": 1}
 
 
-def test_cliente_github_sem_token_e_cabecalhos(monkeypatch):
-    monkeypatch.delenv("GITHUB_TOKEN", raising=False)
-    with pytest.raises(RuntimeError, match="GITHUB_TOKEN ausente"):
-        C.cliente_github()
+def test_cliente_gemini_sem_chave_e_cabecalhos(monkeypatch):
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+    with pytest.raises(RuntimeError, match="GEMINI_API_KEY ausente"):
+        C.cliente_gemini()
     chamadas = []
 
     def falso(req, timeout):
@@ -262,10 +262,10 @@ def test_cliente_github_sem_token_e_cabecalhos(monkeypatch):
 
     monkeypatch.setattr(C.urllib.request, "urlopen", falso)
     monkeypatch.setattr(C.time, "sleep", lambda s: None)
-    c = C.cliente_github("tok-secreto")
+    c = C.cliente_gemini("tok-secreto")
     assert c({}) == {"choices": []} and len(chamadas) == 2
     assert chamadas[0].get_header("Authorization") == "Bearer tok-secreto"
-    assert chamadas[0].full_url == C.URL_GITHUB
+    assert chamadas[0].full_url == C.URL_GEMINI
 
 
 def test_cliente_chat_erro_nao_vaza_token(monkeypatch):
@@ -302,14 +302,26 @@ def _cliente_oraculo_chat():
     return chamar
 
 
-def test_rodar_llm_provedor_github_ponta_a_ponta(tmp_path):
+def test_rodar_llm_provedor_gemini_ponta_a_ponta(tmp_path):
     r = rodar_llm(
-        "openai/falso", 2, "dev", tmp_path, cliente=_cliente_oraculo_chat(), provedor="github"
+        "openai/falso", 2, "dev", tmp_path, cliente=_cliente_oraculo_chat(), provedor="gemini"
     )
-    assert r["provedor"] == "github" and r["conjuntos"]["dev"]["metricas"]["pass^k"][2] == 1.0
-    assert "via github" in (tmp_path / "llm" / "openai_falso" / "RELATORIO.md").read_text(
+    assert r["provedor"] == "gemini" and r["conjuntos"]["dev"]["metricas"]["pass^k"][2] == 1.0
+    assert "via gemini" in (tmp_path / "llm" / "openai_falso" / "RELATORIO.md").read_text(
         encoding="utf-8"
     )
+
+
+def test_rodar_llm_gemini_usa_tool_choice_auto(tmp_path):
+    vistos = []
+    oraculo = _cliente_oraculo_chat()
+
+    def espia(corpo):
+        vistos.append(corpo["tool_choice"])
+        return oraculo(corpo)
+
+    rodar_llm("m", 1, "dev", tmp_path, cliente=espia, provedor="gemini")
+    assert set(vistos) == {"auto"}
 
 
 def test_rodar_llm_provedor_invalido(tmp_path):
@@ -317,11 +329,11 @@ def test_rodar_llm_provedor_invalido(tmp_path):
         rodar_llm("m", 1, "dev", tmp_path, provedor="x")
 
 
-def test_cli_provedor_github_exige_token(monkeypatch, tmp_path):
-    monkeypatch.delenv("GITHUB_TOKEN", raising=False)
-    with pytest.raises(RuntimeError, match="GITHUB_TOKEN"):
+def test_cli_provedor_gemini_exige_chave(monkeypatch, tmp_path):
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+    with pytest.raises(RuntimeError, match="GEMINI_API_KEY"):
         cli.main(
-            ["--llm-modelo", "m", "--provedor", "github", "--trials", "1", "--saida", str(tmp_path)]
+            ["--llm-modelo", "m", "--provedor", "gemini", "--trials", "1", "--saida", str(tmp_path)]
         )
 
 

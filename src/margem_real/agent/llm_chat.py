@@ -1,12 +1,12 @@
-"""Planejador para APIs no formato "chat completions" (GitHub Models, Gemini, Groq, OpenRouter...).
+"""Planejador para APIs no formato "chat completions" (Gemini, Groq, OpenRouter...).
 
 Mesmo contrato do ``PlanejadorClaude``: 6 ferramentas ``margem_*`` somente leitura mais
-``responder``. Existe para permitir uma avaliação SEM custo: o GitHub Models aceita o
-``GITHUB_TOKEN`` do próprio GitHub Actions (permissão ``models: read``), sem chave a guardar.
+``responder``. Existe para permitir uma avaliação sem custo no plano gratuito do Gemini
+(chave gratuita do Google AI Studio). O GitHub Models foi tentado primeiro e NÃO funciona mais:
+responde 200 "OK" em texto simples e a documentação o dá como encerrado em 30/07/2026.
 
 NADA aqui foi validado contra um modelo real até o registro em VERIFICACAO.md dizer o contrário;
-os testes usam um cliente falso. O limite gratuito do GitHub Models é pequeno
-(ver docs/AVALIACAO.md).
+os testes usam um cliente falso. Limites do plano gratuito: ver docs/AVALIACAO.md.
 """
 
 from __future__ import annotations
@@ -21,7 +21,7 @@ from typing import Any
 from .agent import Passo, Resposta
 from .llm import SISTEMA, STATUS_VALIDOS, Cliente, Uso, ferramentas_para_api
 
-URL_GITHUB = "https://models.github.ai/inference/chat/completions"
+URL_GEMINI = "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions"
 
 
 def ferramentas_chat() -> list[dict[str, Any]]:
@@ -59,7 +59,9 @@ def cliente_chat_http(
             try:
                 with urllib.request.urlopen(req, timeout=120) as r:
                     bruto = r.read()
-                    meta = f"HTTP {r.status}, {r.headers.get('Content-Type')}, {r.geturl()}"
+                    tipo = r.headers.get("Content-Type") if hasattr(r, "headers") else None
+                    url_final = r.geturl() if hasattr(r, "geturl") else url
+                    meta = f"HTTP {getattr(r, 'status', '?')}, {tipo}, {url_final}"
                 try:
                     return json.loads(bruto)
                 except json.JSONDecodeError:
@@ -75,15 +77,11 @@ def cliente_chat_http(
     return chamar
 
 
-def cliente_github(token: str | None = None) -> Cliente:
-    t = token or os.environ.get("GITHUB_TOKEN")
-    if not t:
-        raise RuntimeError("GITHUB_TOKEN ausente (no Actions: permissions: models: read).")
-    return cliente_chat_http(
-        URL_GITHUB,
-        t,
-        extra={"Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28"},
-    )
+def cliente_gemini(chave: str | None = None) -> Cliente:
+    k = chave or os.environ.get("GEMINI_API_KEY")
+    if not k:
+        raise RuntimeError("GEMINI_API_KEY ausente (chave gratuita em aistudio.google.com).")
+    return cliente_chat_http(URL_GEMINI, k)
 
 
 class PlanejadorChat:
@@ -96,7 +94,9 @@ class PlanejadorChat:
         max_tokens: int = 1024,
         temperatura: float | None = None,
         uso: Uso | None = None,
+        tool_choice: str = "required",
     ) -> None:
+        self.tool_choice = tool_choice
         self.modelo = modelo
         self.cliente = cliente
         self.max_tokens = max_tokens
@@ -140,7 +140,7 @@ class PlanejadorChat:
             "model": self.modelo,
             "max_tokens": self.max_tokens,
             "tools": ferramentas_chat(),
-            "tool_choice": "required",
+            "tool_choice": self.tool_choice,
             "messages": self._mensagens(pergunta, historico),
         }
         if self.temperatura is not None:

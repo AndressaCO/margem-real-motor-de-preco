@@ -1,19 +1,19 @@
 name: avaliar-llm
 # Roda SOMENTE sob demanda (Actions > avaliar-llm > Run workflow). Não roda em push nem em PR.
-# provedor=github: gratuito, usa o GITHUB_TOKEN da própria execução (models: read), sem secret,
-#   com limites diários baixos (ver docs/AVALIACAO.md).
-# provedor=anthropic: pago, exige o secret ANTHROPIC_API_KEY.
+# provedor=gemini: plano gratuito do Google; exige o secret GEMINI_API_KEY (chave do AI Studio).
+# provedor=anthropic: pago; exige o secret ANTHROPIC_API_KEY.
+# (O GitHub Models, tentado antes, não responde mais: ver docs/AVALIACAO.md.)
 on:
   workflow_dispatch:
     inputs:
       provedor:
-        description: "github (gratuito) | anthropic (pago, exige secret)"
+        description: "gemini (plano gratuito) | anthropic (pago)"
         required: true
-        default: "github"
+        default: "gemini"
       modelo:
-        description: "ID do modelo (github: ex. openai/gpt-4o-mini; anthropic: ex. claude-sonnet-5-5)"
+        description: "ID do modelo (gemini: veja aistudio.google.com; anthropic: ex. claude-sonnet-5-5)"
         required: true
-        default: "openai/gpt-4o-mini"
+        default: "gemini-3.8-flash"
       trials:
         description: "Trials por tarefa (n); custo/cota cresce linearmente"
         required: true
@@ -24,7 +24,6 @@ on:
         default: "heldout"
 permissions:
   contents: read
-  models: read
 concurrency:
   group: avaliar-llm
   cancel-in-progress: false
@@ -43,15 +42,20 @@ jobs:
         env:
           PROVEDOR: ${{ inputs.provedor }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           if [ "$PROVEDOR" = "anthropic" ] && [ -z "$ANTHROPIC_API_KEY" ]; then
-            echo "::error::Secret ANTHROPIC_API_KEY não configurado em Settings > Secrets and variables > Actions."
+            echo "::error::Secret ANTHROPIC_API_KEY não configurado (Settings > Secrets and variables > Actions)."
+            exit 1
+          fi
+          if [ "$PROVEDOR" = "gemini" ] && [ -z "$GEMINI_API_KEY" ]; then
+            echo "::error::Secret GEMINI_API_KEY não configurado (Settings > Secrets and variables > Actions)."
             exit 1
           fi
       - name: Avalia o agente com o LLM
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          GITHUB_TOKEN: ${{ github.token }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           PROVEDOR: ${{ inputs.provedor }}
           MODELO: ${{ inputs.modelo }}
           TRIALS: ${{ inputs.trials }}
