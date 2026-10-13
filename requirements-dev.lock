@@ -1,5 +1,5 @@
 # Gerado em 13/10/2026 com Python 3.12.3: pip install -e '.[dev]' && pip freeze --exclude-editable
-# Testado também com pandas 2.3.3 (numpy 2.2.6), Python 3.11.17 e 3.13.
+# Uso: Python >= 3.12 (numpy 2.5.4 exige >= 3.12). Verificado em 3.12 e 3.13 (119 testes, -W error). Em 3.11 use: pip install -e '.[dev]' (verificado, 119 testes).
 Pygments==2.21.0
 ast_serialize==0.13.0
 coverage==7.16.2

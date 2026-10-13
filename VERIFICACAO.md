@@ -106,7 +106,9 @@ O `marketplace_a` (16% de comissão + R$ 6 fixos) e o `marketplace_b` (12%) fica
 | Ambientes limpos | venv novo em 3.12/pandas 3.0.6, 3.12/pandas 2.3.3, 3.11/pandas 3.0.6 | 118 aprovados; achou o bug do `--trials 2` |
 | Links relativos dos docs | `scripts/auditar.py` (C18) | Ver `AUDITORIA.md` |
 
-**Não verificado nesta rodada:** Python 3.13 localmente (só no CI); Windows/macOS; links externos por `curl` (o shell do ambiente só alcança registros de pacotes; as fontes de `docs/BENCHMARK.md` foram abertas por ferramenta de leitura web em 13/10/2026, não por script, e podem mudar); qualquer LLM real.
+**Verificado depois, a partir de clone limpo do GitHub (commit 8e1442b):** 119 testes com `-W error` (avisos viram erro), ruff, mypy e cobertura 99% em 3.12 e 3.13 (instalação pelo lock file) e em 3.11 (instalação sem lock: o lock exige Python ≥ 3.12 porque numpy 2.5.4 não existe para 3.11 — erro de documentação que estava no cabeçalho do lock e foi corrigido); relatório e CSV byte a byte idênticos nas três versões; `pip-audit` sem vulnerabilidades no lock; links externos reabertos em 13/10/2026 (arXiv 1803.09010, Google eng-practices, dois artigos da Anthropic: abrem com o título esperado; Planalto: a ferramenta de leitura entra em loop de redirecionamento http/https, então reconferi a tabela do Anexo I por outra ferramenta de leitura, com valores iguais aos de `tributos.py`); `evals/` (resultados, relatório e transcrições) regenerados idênticos; demonstração do pipeline e `--rbt12` sem erro.
+
+**Não verificado nesta rodada:** Python 3.13 localmente (só no CI); Windows/macOS; links externos por script/`curl` (o shell só alcança registros de pacotes; a checagem é manual por ferramenta de leitura e pode ficar velha); qualquer LLM real.
 
 ## 7. Sobre "top 0,01%"
 

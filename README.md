@@ -49,7 +49,7 @@ Exemplo: `c = 100`, `d = 34%`, `f = 0` → mínimo `100 / 0,66 = R$ 151,52` e su
 ## Como rodar (quickstart)
 
 ```bash
-pip install -e ".[dev]"                      # ou: pip install -r requirements-dev.lock && pip install -e . --no-deps
+pip install -e ".[dev]"                      # Python 3.11+. Versões fixadas (3.12+): pip install -r requirements-dev.lock && pip install -e . --no-deps
 python -m margem_real --skus 200 --markup 1.8 --margem-alvo 0.10 --semente 42
 python -m margem_real --rbt12 1000000        # mesmo relatório com a alíquota efetiva do Simples (8,45%)
 python -m margem_real.pipeline --skus 100    # demonstração da carga com controles
