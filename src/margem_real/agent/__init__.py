@@ -2,6 +2,7 @@
 
 from .agent import Execucao, Resposta, executar
 from .llm import PlanejadorClaude
+from .llm_chat import PlanejadorChat
 from .planners import Passo, PlanejadorRegras, PlanejadorRuidoso
 from .tools import ESPECIFICACOES, Ferramentas
 
@@ -10,6 +11,7 @@ __all__ = [
     "Execucao",
     "Ferramentas",
     "Passo",
+    "PlanejadorChat",
     "PlanejadorClaude",
     "PlanejadorRegras",
     "PlanejadorRuidoso",

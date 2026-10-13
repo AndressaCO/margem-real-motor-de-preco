@@ -1,23 +1,30 @@
 name: avaliar-llm
-# Roda SOMENTE sob demanda (Actions > avaliar-llm > Run workflow). Não roda em push nem em PR,
-# porque cada execução gasta créditos da API. Exige o secret ANTHROPIC_API_KEY no repositório.
+# Roda SOMENTE sob demanda (Actions > avaliar-llm > Run workflow). Não roda em push nem em PR.
+# provedor=github: gratuito, usa o GITHUB_TOKEN da própria execução (models: read), sem secret,
+#   com limites diários baixos (ver docs/AVALIACAO.md).
+# provedor=anthropic: pago, exige o secret ANTHROPIC_API_KEY.
 on:
   workflow_dispatch:
     inputs:
+      provedor:
+        description: "github (gratuito) | anthropic (pago, exige secret)"
+        required: true
+        default: "github"
       modelo:
-        description: "ID do modelo (ex.: claude-sonnet-5-5)"
+        description: "ID do modelo (github: ex. openai/gpt-4o-mini; anthropic: ex. claude-sonnet-5-5)"
         required: true
-        default: "claude-sonnet-5-5"
+        default: "openai/gpt-4o-mini"
       trials:
-        description: "Trials por tarefa (n); custo cresce linearmente"
+        description: "Trials por tarefa (n); custo/cota cresce linearmente"
         required: true
-        default: "3"
+        default: "1"
       split:
         description: "dev | heldout | todos"
         required: true
         default: "heldout"
 permissions:
   contents: read
+  models: read
 concurrency:
   group: avaliar-llm
   cancel-in-progress: false
@@ -32,25 +39,31 @@ jobs:
           python-version: "3.12"
           cache: pip
       - run: pip install -e .
-      - name: Checa que a chave existe (sem exibi-la)
+      - name: Checa a credencial do provedor (sem exibi-la)
         env:
+          PROVEDOR: ${{ inputs.provedor }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
-          if [ -z "$ANTHROPIC_API_KEY" ]; then
+          if [ "$PROVEDOR" = "anthropic" ] && [ -z "$ANTHROPIC_API_KEY" ]; then
             echo "::error::Secret ANTHROPIC_API_KEY não configurado em Settings > Secrets and variables > Actions."
             exit 1
           fi
       - name: Avalia o agente com o LLM
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_TOKEN: ${{ github.token }}
+          PROVEDOR: ${{ inputs.provedor }}
           MODELO: ${{ inputs.modelo }}
           TRIALS: ${{ inputs.trials }}
           SPLIT: ${{ inputs.split }}
-        run: python -m margem_real.agent.evals --llm-modelo "$MODELO" --trials "$TRIALS" --split "$SPLIT" --saida evals
+        run: python -m margem_real.agent.evals --provedor "$PROVEDOR" --llm-modelo "$MODELO" --trials "$TRIALS" --split "$SPLIT" --saida evals
       - name: Resumo na página da execução
+        if: always()
         run: |
-          for f in evals/llm/*/RELATORIO.md; do cat "$f" >> "$GITHUB_STEP_SUMMARY"; done
+          for f in evals/llm/*/RELATORIO.md; do [ -f "$f" ] && cat "$f" >> "$GITHUB_STEP_SUMMARY"; done; true
       - uses: actions/upload-artifact@v6
+        if: always()
         with:
           name: avaliacao-llm
           path: evals/llm/
+          if-no-files-found: ignore

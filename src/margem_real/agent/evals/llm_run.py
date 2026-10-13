@@ -13,10 +13,12 @@ from pathlib import Path
 from typing import Any
 
 from ..llm import Cliente, PlanejadorClaude, Uso, cliente_http
+from ..llm_chat import PlanejadorChat, cliente_github
 from .metrics import agregar
 from .runner import gravar_transcricoes, rodar
 from .tasks import TAREFAS, contexto
 
+PROVEDORES = ("anthropic", "github")
 SPLITS = {"dev": ("dev",), "heldout": ("heldout",), "todos": ("dev", "heldout")}
 
 
@@ -35,13 +37,18 @@ def rodar_llm(
     saida: Path,
     cliente: Cliente | None = None,
     temperatura: float | None = None,
+    provedor: str = "anthropic",
 ) -> dict[str, Any]:
     ctx = contexto()
-    cli = cliente or cliente_http()
+    if provedor not in PROVEDORES:
+        raise ValueError(f"provedor desconhecido: {provedor}")
+    fabrica_cliente = cliente_github if provedor == "github" else cliente_http
+    classe = PlanejadorChat if provedor == "github" else PlanejadorClaude
+    cli = cliente or fabrica_cliente()
     uso = Uso()
     tarefas = tuple(t for t in TAREFAS if t.split in SPLITS[split])
     res = rodar(
-        lambda i: PlanejadorClaude(modelo, cli, temperatura=temperatura, uso=uso),
+        lambda i: classe(modelo, cli, temperatura=temperatura, uso=uso),
         ctx,
         trials,
         tarefas,
@@ -49,6 +56,7 @@ def rodar_llm(
     split_de = {t.id: t.split for t in TAREFAS}
     resumo: dict[str, Any] = {
         "modelo": modelo,
+        "provedor": provedor,
         "trials": trials,
         "tarefas": len(tarefas),
         "uso": {
@@ -110,7 +118,8 @@ def renderizar(r: dict[str, Any]) -> str:
         for sp, v in r["conjuntos"].items()
     )
     return (
-        f"# Avaliação do agente com LLM: `{r['modelo']}` (gerado; não edite à mão)\n\n"
+        f"# Avaliação do agente com LLM: `{r['modelo']}` via {r.get('provedor', 'anthropic')} "
+        "(gerado; não edite à mão)\n\n"
         f"Tarefas: {r['tarefas']} · trials por tarefa: {r['trials']} · "
         "ambiente isolado por trial.\n\n"
         "## Métricas\n\n" + "\n".join(linhas) + "\n\n"

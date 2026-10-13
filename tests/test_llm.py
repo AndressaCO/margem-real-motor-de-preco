@@ -5,8 +5,9 @@ import urllib.error
 
 import pytest
 
-from margem_real.agent import ESPECIFICACOES, PlanejadorClaude, PlanejadorRegras
+from margem_real.agent import ESPECIFICACOES, PlanejadorChat, PlanejadorClaude, PlanejadorRegras
 from margem_real.agent import llm as L
+from margem_real.agent import llm_chat as C
 from margem_real.agent.evals import __main__ as cli
 from margem_real.agent.evals.llm_run import renderizar, rodar_llm
 
@@ -184,3 +185,141 @@ def test_cli_llm_modelo_roda_e_imprime_uso(monkeypatch, tmp_path, capsys):
     cli.main(["--llm-modelo", "m", "--trials", "1", "--split", "heldout", "--saida", str(tmp_path)])
     assert '"chamadas_api"' in capsys.readouterr().out
     assert not (tmp_path / "resultados.json").exists()  # o resultado determinístico não é tocado
+
+
+# ---- formato "chat completions" (GitHub Models etc.) ----
+
+
+def _resp_chat(nome=None, uso=(10, 5), **args):
+    msg = {"role": "assistant", "content": "oi"}
+    if nome:
+        msg["tool_calls"] = [
+            {
+                "id": "c",
+                "type": "function",
+                "function": {"name": nome, "arguments": json.dumps(args)},
+            }
+        ]
+    return {
+        "choices": [{"message": msg}],
+        "usage": {"prompt_tokens": uso[0], "completion_tokens": uso[1]},
+    }
+
+
+def test_ferramentas_chat_formato_function():
+    f = C.ferramentas_chat()
+    assert f[0]["type"] == "function" and f[0]["function"]["parameters"]["type"] == "object"
+    assert f[-1]["function"]["name"] == "responder"
+
+
+def test_chat_mensagens_e_passo():
+    vistos = []
+    p = PlanejadorChat("openai/x", lambda c: (vistos.append(c), _resp_chat("margem_conciliar"))[1])
+    h = [{"ferramenta": "margem_conciliar", "args": {}, "resultado": {"ok": True}}]
+    passo = p.proximo("oi", h)
+    assert passo.ferramenta == "margem_conciliar"
+    m = vistos[0]["messages"]
+    assert m[0]["role"] == "system" and m[1] == {"role": "user", "content": "oi"}
+    assert m[2]["tool_calls"][0]["id"] == "call_00" and m[3]["tool_call_id"] == "call_00"
+    assert vistos[0]["tool_choice"] == "required" and "temperature" not in vistos[0]
+    assert (p.uso.chamadas, p.uso.tokens_entrada, p.uso.tokens_saida) == (1, 10, 5)
+    p2 = PlanejadorChat("m", lambda c: _resp_chat("margem_conciliar"), temperatura=0.0)
+    p2.proximo("q", [])
+
+
+def test_chat_para_passo_casos_de_borda():
+    assert C._para_passo_chat({"choices": []}).resposta.status == "erro"
+    assert C._para_passo_chat(_resp_chat()).resposta.status == "erro"
+    ruim = {
+        "choices": [{"message": {"tool_calls": [{"function": {"name": "x", "arguments": "{"}}]}}]
+    }
+    assert "JSON" in C._para_passo_chat(ruim).resposta.texto
+    lista = {
+        "choices": [{"message": {"tool_calls": [{"function": {"name": "x", "arguments": "[]"}}]}}]
+    }
+    assert C._para_passo_chat(lista).args == {}
+    assert (
+        C._para_passo_chat(_resp_chat("responder", status="talvez", texto="t")).resposta.status
+        == "erro"
+    )
+    r = C._para_passo_chat(_resp_chat("responder", status="ok", texto="t", dados="lixo")).resposta
+    assert r.status == "ok" and r.dados == {}
+    r = C._para_passo_chat(_resp_chat("responder", status="ok", texto="t", dados={"a": 1})).resposta
+    assert r.dados == {"a": 1}
+
+
+def test_cliente_github_sem_token_e_cabecalhos(monkeypatch):
+    monkeypatch.delenv("GITHUB_TOKEN", raising=False)
+    with pytest.raises(RuntimeError, match="GITHUB_TOKEN ausente"):
+        C.cliente_github()
+    chamadas = []
+
+    def falso(req, timeout):
+        chamadas.append(req)
+        if len(chamadas) == 1:
+            raise urllib.error.HTTPError(req.full_url, 429, "limite", {}, None)
+        return _Resp({"choices": []})
+
+    monkeypatch.setattr(C.urllib.request, "urlopen", falso)
+    monkeypatch.setattr(C.time, "sleep", lambda s: None)
+    c = C.cliente_github("tok-secreto")
+    assert c({}) == {"choices": []} and len(chamadas) == 2
+    assert chamadas[0].get_header("Authorization") == "Bearer tok-secreto"
+    assert chamadas[0].full_url == C.URL_GITHUB
+
+
+def test_cliente_chat_erro_nao_vaza_token(monkeypatch):
+    def falso(req, timeout):
+        raise urllib.error.HTTPError(req.full_url, 401, "Bearer tok-secreto", {}, None)
+
+    monkeypatch.setattr(C.urllib.request, "urlopen", falso)
+    with pytest.raises(RuntimeError) as e:
+        C.cliente_chat_http("https://x", "tok-secreto")({})
+    assert "tok-secreto" not in str(e.value) and "401" in str(e.value)
+
+
+def _cliente_oraculo_chat():
+    regras = PlanejadorRegras()
+
+    def chamar(corpo):
+        msgs = corpo["messages"]
+        historico = []
+        for a, u in zip(msgs[2::2], msgs[3::2], strict=False):
+            fn = a["tool_calls"][0]["function"]
+            historico.append(
+                {
+                    "ferramenta": fn["name"],
+                    "args": json.loads(fn["arguments"]),
+                    "resultado": json.loads(u["content"]),
+                }
+            )
+        passo = regras.proximo(msgs[1]["content"], historico)
+        if passo.ferramenta:
+            return _resp_chat(passo.ferramenta, **passo.args)
+        r = passo.resposta
+        return _resp_chat("responder", status=r.status, texto=r.texto, dados=r.dados)
+
+    return chamar
+
+
+def test_rodar_llm_provedor_github_ponta_a_ponta(tmp_path):
+    r = rodar_llm(
+        "openai/falso", 2, "dev", tmp_path, cliente=_cliente_oraculo_chat(), provedor="github"
+    )
+    assert r["provedor"] == "github" and r["conjuntos"]["dev"]["metricas"]["pass^k"][2] == 1.0
+    assert "via github" in (tmp_path / "llm" / "openai_falso" / "RELATORIO.md").read_text(
+        encoding="utf-8"
+    )
+
+
+def test_rodar_llm_provedor_invalido(tmp_path):
+    with pytest.raises(ValueError, match="provedor desconhecido"):
+        rodar_llm("m", 1, "dev", tmp_path, provedor="x")
+
+
+def test_cli_provedor_github_exige_token(monkeypatch, tmp_path):
+    monkeypatch.delenv("GITHUB_TOKEN", raising=False)
+    with pytest.raises(RuntimeError, match="GITHUB_TOKEN"):
+        cli.main(
+            ["--llm-modelo", "m", "--provedor", "github", "--trials", "1", "--saida", str(tmp_path)]
+        )

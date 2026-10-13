@@ -39,7 +39,9 @@ Leitura:
 
 `PlanejadorClaude` (`src/margem_real/agent/llm.py`) é um `Planejador` que chama a API Messages da Anthropic. O modelo recebe as 6 ferramentas `margem_*` e uma 7ª, `responder(status, texto, dados)`, que encerra o atendimento; os avaliadores por estado final são os mesmos do stand-in. A chave vem de `ANTHROPIC_API_KEY`.
 
-**Na nuvem do GitHub (recomendado):**
+**Gratuito, na nuvem do GitHub (GitHub Models):** `Actions > avaliar-llm > Run workflow` com `provedor=github` (padrão) e um modelo do catálogo, por exemplo `openai/gpt-4o-mini`. Não precisa de chave nem de secret: o workflow usa o `GITHUB_TOKEN` da própria execução com a permissão `models: read`. Limites (FATO, documentação do GitHub consultada em 13/10/2026, sujeitos a mudança sem aviso): no plano Copilot Free, modelos "low" têm 15 requisições/min, 150/dia e 8.000 tokens de entrada por requisição; modelos "high", 10/min e 50/dia. Cada tarefa gasta várias requisições (uma por passo); por isso o padrão é `heldout` com 1 trial. O modelo avaliado é de outro fornecedor, então o resultado diz sobre ele, não sobre o Claude. Não foi validado ainda que o `GITHUB_TOKEN` do Actions é aceito nesta conta para o modelo escolhido: a primeira execução responde isso.
+
+**Pago, Anthropic (opcional):**
 
 1. Em *Settings > Secrets and variables > Actions*, crie o secret `ANTHROPIC_API_KEY`.
 2. Em *Actions > avaliar-llm > Run workflow*, informe o modelo (ex.: `claude-sonnet-5-5`), `trials` (padrão 3) e `split` (`heldout`, `dev` ou `todos`).
