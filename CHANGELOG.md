@@ -9,7 +9,7 @@ Formato inspirado em Keep a Changelog. Datas no formato dd/mm/aaaa.
 - `python -m margem_real.agent.evals --llm-modelo <id> [--trials N] [--split dev|heldout|todos]`: roda o harness com um LLM real e grava em `evals/llm/<modelo>/`.
 - `PlanejadorChat` e `--provedor gemini`: avaliação no plano gratuito do Gemini (secret `GEMINI_API_KEY`). O GitHub Models foi tentado e não responde mais.
 - Workflow `avaliar-llm` (somente `workflow_dispatch`, secret `ANTHROPIC_API_KEY`).
-- 19 testes com cliente falso (total: 141 testes, 99% de cobertura).
+- 19 testes com cliente falso (total: 142 testes, 99% de cobertura).
 
 ### Conhecido
 - Nenhuma execução contra um modelo real foi feita (sem chave no ambiente de desenvolvimento).

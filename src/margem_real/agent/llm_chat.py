@@ -39,6 +39,15 @@ def ferramentas_chat() -> list[dict[str, Any]]:
     ]
 
 
+def _corpo_erro(e: urllib.error.HTTPError, segredo: str) -> str:
+    """Trecho do corpo do erro (ajuda a achar o campo recusado), sem o segredo."""
+    try:
+        txt = e.read()[:400].decode("utf-8", "replace")
+    except Exception:
+        return "(sem corpo)"
+    return " ".join(txt.replace(segredo, "***").split())
+
+
 def cliente_chat_http(
     url: str,
     token: str,
@@ -76,7 +85,9 @@ def cliente_chat_http(
                 if e.code in (429, 500, 502, 503) and i < tentativas - 1:
                     time.sleep(espera * (2**i))
                     continue
-                raise RuntimeError(f"API respondeu HTTP {e.code}") from None
+                raise RuntimeError(
+                    f"API respondeu HTTP {e.code}: {_corpo_erro(e, token)}"
+                ) from None
             except (TimeoutError, urllib.error.URLError) as e:
                 if i < tentativas - 1:
                     time.sleep(espera * (2**i))

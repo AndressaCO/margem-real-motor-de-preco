@@ -365,3 +365,16 @@ def test_cliente_chat_repete_em_timeout_e_desiste(monkeypatch):
     with pytest.raises(RuntimeError, match="sem resposta da API após 3 tentativas"):
         C.cliente_chat_http("https://x", "tok", tentativas=3)({})
     assert len(n) == 3
+
+
+def test_cliente_chat_erro_http_inclui_corpo_sem_segredo(monkeypatch):
+    import io
+
+    def falso(req, timeout):
+        corpo = io.BytesIO(b'{"error": "campo invalido tok-secreto em tools"}')
+        raise urllib.error.HTTPError(req.full_url, 400, "ruim", {}, corpo)
+
+    monkeypatch.setattr(C.urllib.request, "urlopen", falso)
+    with pytest.raises(RuntimeError) as e:
+        C.cliente_chat_http("https://x", "tok-secreto")({})
+    assert "campo invalido" in str(e.value) and "tok-secreto" not in str(e.value)
