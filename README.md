@@ -1,5 +1,7 @@
 # Margem Real: preço mínimo e margem por SKU e canal
 
+[![ci](https://github.com/AndressaCO/margem-real-motor-de-preco/actions/workflows/ci.yml/badge.svg)](https://github.com/AndressaCO/margem-real-motor-de-preco/actions/workflows/ci.yml)
+
 > **Dados 100% sintéticos.** Alíquotas, comissões e fretes são ilustrativos e não representam nenhuma empresa nem tabela de marketplace. Troque pelos seus números e valide com seu contador.
 
 **English summary:** SQL (DuckDB) + Python engine that computes contribution margin and a break-even ("minimum") price per SKU × sales channel, then simulates repricing to a target margin. It shows how one flat markup across channels can hide loss-making SKU/channel pairs. Synthetic data, tested (26 tests), reproducible.
@@ -54,6 +56,14 @@ src/margem_real/
   cli.py          # gera relatório em Markdown e CSV
 tests/            # 26 testes: contas manuais, invariantes, SQL × Python
 ```
+
+## O que este projeto demonstra (e o que não)
+
+| Área | Demonstrado aqui | Não demonstrado aqui |
+|---|---|---|
+| Controladoria e precificação | Margem de contribuição, preço mínimo e sugerido, markup × margem por canal, premissas e limites explícitos | Matriz de controles internos, conciliações, calendário fiscal, regime tributário detalhado |
+| Engenharia de dados | Modelo analítico em SQL (DuckDB), geração reprodutível de dados, pacote Python, testes, lint e CI | Orquestração, cargas incrementais, qualidade de dados em escala, nuvem, dbt |
+| Agentes de IA | Nada | Todo o tema |
 
 ## Decisões de projeto
 
