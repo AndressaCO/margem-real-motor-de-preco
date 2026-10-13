@@ -327,8 +327,14 @@ def test_cli_provedor_github_exige_token(monkeypatch, tmp_path):
 
 def test_cliente_chat_resposta_nao_json(monkeypatch):
     class _Texto(_Resp):
+        status = 200
+        headers = {"Content-Type": "text/html"}
+
         def read(self):
             return b"<html>erro</html>"
+
+        def geturl(self):
+            return "https://x"
 
     monkeypatch.setattr(C.urllib.request, "urlopen", lambda req, timeout: _Texto({}))
     with pytest.raises(RuntimeError, match="não é JSON"):

@@ -59,11 +59,12 @@ def cliente_chat_http(
             try:
                 with urllib.request.urlopen(req, timeout=120) as r:
                     bruto = r.read()
+                    meta = f"HTTP {r.status}, {r.headers.get('Content-Type')}, {r.geturl()}"
                 try:
                     return json.loads(bruto)
                 except json.JSONDecodeError:
                     trecho = bruto[:200].decode("utf-8", "replace")
-                    raise RuntimeError(f"resposta não é JSON: {trecho!r}") from None
+                    raise RuntimeError(f"resposta não é JSON ({meta}): {trecho!r}") from None
             except urllib.error.HTTPError as e:
                 if e.code in (429, 500, 502, 503) and i < tentativas - 1:
                     time.sleep(espera * (2**i))
